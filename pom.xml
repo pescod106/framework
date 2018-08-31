@@ -12,6 +12,7 @@
 
     <modules>
 
+        <module>database</module>
     </modules>
 
     <properties>
