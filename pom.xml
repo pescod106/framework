@@ -13,6 +13,7 @@
     <modules>
         <module>fw-db</module>
         <module>fw-json</module>
+        <module>fw-mail</module>
     </modules>
 
     <properties>
