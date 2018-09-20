@@ -1,7 +1,5 @@
 package com.ltar.base.util;
 
-import cn.huoqiu.base.util.IpUtil;
-import com.ltar.net.dto.HttpResponseEntity;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -21,7 +19,7 @@ public class ReflectUtilsTest {
 
     @Test
     public void getFields() {
-        List<Field> list = ReflectUtils.getFields(HttpResponseEntity.class, true);
+        List<Field> list = ReflectUtils.getFields(Object.class, true);
         System.out.println("---------------------------------");
         for (Field field : list) {
             System.out.println(field.toString());

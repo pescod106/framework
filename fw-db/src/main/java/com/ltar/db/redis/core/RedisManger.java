@@ -12,11 +12,11 @@ import java.util.Map;
  * @date: 2018/9/17
  * @version: 1.0.0
  */
-public class JedisConnect {
+public class RedisManger {
     public static final int DEFAULT_TIMEOUT = 2 * 1000;
     private static Map<String, JedisPool> poolMap = new HashMap<String, JedisPool>();
 
-    public static JedisConnect getInstance() {
+    public static RedisManger getInstance() {
         return RedisHolder.instance;
     }
 
@@ -74,7 +74,7 @@ public class JedisConnect {
 
 
     private static class RedisHolder {
-        private static JedisConnect instance = new JedisConnect();
+        private static RedisManger instance = new RedisManger();
 
         public RedisHolder() {
         }
