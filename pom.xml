@@ -16,6 +16,7 @@
         <module>fw-mail</module>
         <module>fw-net</module>
         <module>fw-base</module>
+        <module>fw-redis</module>
     </modules>
 
     <properties>
@@ -115,6 +116,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-redis -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>2.0.10.RELEASE</version>
+        </dependency>
+
 
         <!--jackson-->
         <dependency>

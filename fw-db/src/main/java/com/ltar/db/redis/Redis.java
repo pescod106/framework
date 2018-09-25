@@ -8,17 +8,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Protocol;
 import redis.clients.jedis.exceptions.JedisException;
 
 import java.util.*;
 
 /**
- * @desc:
+ * @desc: Redis 操作工具类
+ * <a href="http://www.redis.cn/commands.html">Click</a> to see redis commands
  * @author: changzhigao
  * @date: 2018/9/19
  * @version: 1.0.0
  */
-//todo getSet(String,String)
 public class Redis {
     private static final Logger LOGGER = LoggerFactory.getLogger(Redis.class);
     /**
@@ -32,8 +33,8 @@ public class Redis {
     private static int redisTimeout;
 
     private static String REDIS_DEFAULT_IP = "127.0.0.1";
-    private static int REDIS_DEFAULT_PORT = 6379;
-    private static int REDIS_DEFAULT_TIMEOUT = 2000;
+    private static int REDIS_DEFAULT_PORT = Protocol.DEFAULT_PORT;
+    private static int REDIS_DEFAULT_TIMEOUT = Protocol.DEFAULT_TIMEOUT;
 
 
     static {
@@ -58,114 +59,38 @@ public class Redis {
 
 
     /**
-     * Set the string value as value of the key
-     * Survival time is default {@link #KEY_DEFAULT_EXPIRE_TIMEOUT}
+     * see {@link #set(Object, Object)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/set.html">set</a> to see detail
      *
      * @param key
      * @param value
      * @return
      */
-    public static void setString(String key, String value) {
-        setString(key, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
-    }
-
-    /**
-     * Set the string value as value of the key
-     *
-     * @param key
-     * @param value
-     * @param seconds Survival time
-     * @return
-     */
-    public static void setString(String key, String value, int seconds) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            jedis.set(key, value);
-            jedis.expire(key, seconds);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * see {@link #setStringIfNotExists(String, String, int)}
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public static void setStringIfNotExists(String key, String value) {
-        setStringIfNotExists(key, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
-    }
-
-    /**
-     * if key don't exist,will set the string value as value of the key,and set expire time
-     * if not, the value will not be set of the key,but expire time will be set
-     *
-     * @param key
-     * @param value
-     * @param seconds
-     * @return
-     */
-    public static void setStringIfNotExists(String key, String value, int seconds) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            jedis.setnx(key, value);
-            jedis.expire(key, seconds);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Get the value of the specified key. If the key does not exist null is
-     * returned. If the value stored at key is not a string an error is returned
-     * because GET can only handle string values.
-     *
-     * @param key
-     * @return
-     */
-    public static String getString(String key) {
-        Jedis jedis = null;
-        String result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.get(key);
-        } finally {
-            closeJedis(jedis);
-        }
-        return result;
-    }
-
-    /**
-     * see {@link #setObject(String, Object, int)}
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public static void setObject(String key, Object value) {
-        setObject(key, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
+    public static void set(Object key, Object value) {
+        set(key, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
     }
 
     /**
      * Set the serialize object value as value of the key.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/set.html">set</a> to see detail
      *
      * @param key
      * @param value
      * @param seconds
      * @return
      */
-    public static void setObject(String key, Object value, int seconds) {
+    public static void set(Object key, Object value, int seconds) {
 
         Jedis jedis = null;
         boolean success = false;
         try {
             jedis = getJedis();
-            jedis.set(key.getBytes(), SerializeUtil.serialize(value));
-            jedis.expire(key.getBytes(), seconds);
+            jedis.set(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            jedis.expire(SerializeUtil.serialize(key), seconds);
             success = true;
         } finally {
             closeJedis(jedis);
@@ -175,95 +100,283 @@ public class Redis {
     /**
      * Get an object as value of specified key.
      * If the key does not exist null is returned.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/get.html">get</a> to see detail
      *
      * @param key
      * @return
      */
-    public static Object getObject(String key) {
+    public static <T> T get(Object key) {
         Jedis jedis = null;
-        Object result = null;
         try {
             jedis = getJedis();
-            byte[] obj = jedis.get(key.getBytes());
-            result = null == obj ? null : SerializeUtil.deserialize(obj);
+            byte[] obj = jedis.get(SerializeUtil.serialize(key));
+            return SerializeUtil.deserialize(obj);
         } finally {
             closeJedis(jedis);
         }
-        return result;
     }
 
     /**
-     * see {@link #hsetString(String, String, String, int)}
+     * GETSET is an atomic set this value and return the old value command. Set
+     * key to the string value and return the old value stored at key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/getset.html">getset</a> to see detail
+     *
+     * @param key
+     * @param value
+     * @param <T>
+     * @return
+     */
+    public static <T> T getSet(Object key, Object value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            byte[] obj = jedis.getSet(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            return SerializeUtil.deserialize(obj);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * GETSET is an atomic set this value and return the old value command. Set
+     * key to the string value and return the old value stored at key
+     * <p>
+     * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/getset.html">getset</a> to see detail
+     *
+     * @param key
+     * @param value
+     * @param seconds
+     * @param <T>
+     * @return
+     */
+    public static <T> T getSet(Object key, Object value, int seconds) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            byte[] obj = jedis.getSet(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+            return SerializeUtil.deserialize(obj);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+
+    /**
+     * see {@link #setnx(Object, Object, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/setnx.html">setnx</a> to see detail
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public static void setnx(Object key, Object value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Long result = jedis.setnx(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            if (1L == result) {
+                jedis.expire(SerializeUtil.serialize(key), KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * if key don't exist,will set the string value as value of the key,and set expire time
+     * if not, the value will not be set of the key,but expire time will be set
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/setnx.html">setnx</a> to see detail
+     *
+     * @param key
+     * @param value
+     * @param seconds
+     * @return
+     */
+    public static void setnx(Object key, Object value, int seconds) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.setnx(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * See {@link #mset(int, Object...)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/mset.html">mset</a> to see detail
+     *
+     * @param keysvalues
+     */
+    public static void mset(Object... keysvalues) {
+        mset(KEY_DEFAULT_EXPIRE_TIMEOUT, keysvalues);
+    }
+
+    /**
+     * Set the the respective keys to the respective values. MSET will replace
+     * old values with new values,
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/mset.html">mset</a> to see detail
+     *
+     * @param seconds
+     * @param keysvalues key value pair, param count must be even
+     */
+    public static void mset(int seconds, Object... keysvalues) {
+        if (keysvalues.length == 0 || keysvalues.length % 2 != 0) {
+            throw new IllegalArgumentException("param count must be even,please check");
+        }
+        Jedis jedis = null;
+        try {
+            byte[][] bytes = new byte[keysvalues.length][];
+            for (int i = 0; i < keysvalues.length; i++) {
+                bytes[i] = SerializeUtil.serialize(keysvalues[i]);
+            }
+            jedis = getJedis();
+            jedis.mset(bytes);
+            for (int i = 0; i < bytes.length; i++) {
+                jedis.expire(bytes[i], KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * See {@link #msetnx(int, Object...)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/msetnx.html">msetnx</a> to see detail
+     *
+     * @param keysvalues
+     */
+    public static void msetnx(Object... keysvalues) {
+        msetnx(KEY_DEFAULT_EXPIRE_TIMEOUT, keysvalues);
+    }
+
+    /**
+     * Set the the respective keys to the respective values.
+     * {@link #mset(int, Object...) MSET} will replace old values with new values,
+     * while MSETNX will not perform any operation at all even if just a single
+     * key already exists.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/msetnx.html">msetnx</a> to see detail
+     *
+     * @param keysvalues
+     */
+    public static void msetnx(int seconds, Object... keysvalues) {
+        if (keysvalues.length == 0 || keysvalues.length % 2 != 0) {
+            throw new IllegalArgumentException("param count must be even,please check");
+        }
+        Jedis jedis = null;
+        try {
+            byte[][] bytes = new byte[keysvalues.length][];
+            for (int i = 0; i < keysvalues.length; i++) {
+                bytes[i] = SerializeUtil.serialize(keysvalues[i]);
+            }
+            jedis = getJedis();
+            jedis.msetnx(bytes);
+            for (int i = 0; i < bytes.length; i++) {
+                jedis.expire(bytes[i], KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * see {@link #hset(Object, Object, Object, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hset.html">hset</a> to see detail
      *
      * @param key
      * @param field
      * @param value
      */
-    public static void hsetString(String key, String field, String value) {
-        hsetString(key, field, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
+    public static void hset(Object key, Object field, Object value) {
+        hset(key, field, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
     }
 
     /**
      * Set the specified hash field to the specified value.
+     * Set a timeout on the specified key
      * <p>
-     * If key does not exist, a new key holding a hash is created.
      * <p>
+     * click  <a href="http://www.redis.cn/commands/hset.html">hset</a> to see detail
      *
      * @param key
      * @param field
      * @param value
      * @param seconds
-     * @return If the field already exists, and the HSET just produced an update of the value
      */
-    public static void hsetString(String key, String field, String value, int seconds) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            jedis.hset(key, field, value);
-            jedis.expire(key, seconds);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * @param key
-     * @param field
-     */
-    public static String hgetString(String key, String field) {
-        Jedis jedis = null;
-        String result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.hget(key, field);
-        } finally {
-            closeJedis(jedis);
-        }
-        return result;
-    }
-
-    /**
-     * see {@link #hsetObject(Object, Object, Object, int)}
-     *
-     * @param key
-     * @param field
-     * @param value
-     */
-    public static void hsetObject(Object key, Object field, Object value) {
-        hsetObject(key, field, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
-    }
-
-    /**
-     * @param key
-     * @param field
-     * @param value
-     * @param seconds
-     */
-    public static void hsetObject(Object key, Object field, Object value, int seconds) {
+    public static void hset(Object key, Object field, Object value, int seconds) {
         Jedis jedis = null;
         try {
             jedis = getJedis();
             jedis.hset(SerializeUtil.serialize(key), SerializeUtil.serialize(field), SerializeUtil.serialize(value));
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Set the specified hash field to the specified value if the field not exists.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hsetnx.html">hsetnx</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     */
+    public static void hsetnx(Object key, Object field, Object value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            Long result = jedis.hsetnx(SerializeUtil.serialize(key), SerializeUtil.serialize(field), SerializeUtil.serialize(value));
+            if (result == 1L) {
+                jedis.expire(SerializeUtil.serialize(key), KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Set the specified hash field to the specified value if the field not exists.
+     * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hsetnx.html">hsetnx</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     * @param seconds
+     */
+    public static void hsetnx(Object key, Object field, Object value, int seconds) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.hsetnx(SerializeUtil.serialize(key), SerializeUtil.serialize(field), SerializeUtil.serialize(value));
             jedis.expire(SerializeUtil.serialize(key), seconds);
         } finally {
             closeJedis(jedis);
@@ -276,109 +389,42 @@ public class Redis {
      * <p>
      * If the field is not found or the key does not exist, null is returned.
      * <p>
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hget.html">hget</a> to see detail
      *
      * @param key
      * @param field
      * @return
      */
-    public static Object hgetObject(Object key, Object field) {
+    public static <T> T hget(Object key, Object field) {
         Jedis jedis = null;
-        Object result = null;
         try {
             jedis = getJedis();
             byte[] bytes = jedis.hget(SerializeUtil.serialize(key), SerializeUtil.serialize(field));
-            result = SerializeUtil.deserialize(bytes);
+            return SerializeUtil.deserialize(bytes);
         } finally {
             closeJedis(jedis);
         }
-        return result;
-    }
-
-    /**
-     * {@link #hmsetStrings(String, Map, int)}
-     *
-     * @param key
-     * @param map
-     */
-    public static void hmsetStrings(String key, Map<String, String> map) {
-        hmsetStrings(key, map, KEY_DEFAULT_EXPIRE_TIMEOUT);
-    }
-
-    /**
-     * Set the respective fields to the respective values. HMSET replaces old
-     * values with new values.
-     *
-     * @param key
-     * @param map
-     * @param seconds
-     */
-    public static void hmsetStrings(String key, Map<String, String> map, int seconds) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            jedis.hmset(key, map);
-            jedis.expire(key, seconds);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Retrieve the values associated to the specified fields.
-     * <p>
-     * If some of the specified fields do not exist, null values are returned.
-     * Non existing keys are considered like empty hashes.
-     * <p>
-     *
-     * @param key
-     * @param fields
-     * @return
-     */
-    public static List<String> hmgetStrings(String key, String... fields) {
-        Jedis jedis = null;
-        List<String> stringList = null;
-        try {
-            jedis = getJedis();
-            stringList = jedis.hmget(key, fields);
-        } finally {
-            closeJedis(jedis);
-        }
-        return stringList;
-    }
-
-    /**
-     * Retrieve one value associated to the specified field.
-     *
-     * @param key
-     * @param field
-     * @return
-     */
-    public static String hmgetString(String key, String field) {
-        Jedis jedis = null;
-        String result = null;
-        try {
-            jedis = getJedis();
-            result = CollectionHelper.getMostOneFromCollection(jedis.hmget(key, field));
-        } finally {
-            closeJedis(jedis);
-        }
-        return result;
     }
 
     /**
      * Return the number of items in a hash.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hlen.html">hlen</a> to see detail
      *
      * @param key
      * @return The number of entries (fields) contained in the hash stored at
      * key. If the specified key does not exist, 0 is returned assuming
      * an empty hash.
      */
-    public static Long hlen(String key) {
+    public static Long hlen(Object key) {
         Jedis jedis = null;
         Long result = null;
         try {
             jedis = getJedis();
-            result = jedis.hlen(key);
+            result = jedis.hlen(SerializeUtil.serialize(key));
         } finally {
             closeJedis(jedis);
         }
@@ -387,43 +433,52 @@ public class Redis {
 
     /**
      * Test for existence of a specified field in a hash.
+     * <p>
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hexists.html">hexists</a> to see detail
      *
      * @param key
      * @param field
      * @return Return 1 if the hash stored at key contains the specified field.
      * Return 0 if the key is not found or the field is not present.
      */
-    public static Boolean hexists(String key, String field) {
+    public static Boolean hexists(Object key, Object field) {
         Jedis jedis = null;
-        Boolean result = null;
         try {
             jedis = getJedis();
-            result = jedis.hexists(key, field);
+            return jedis.hexists(SerializeUtil.serialize(key), SerializeUtil.serialize(field));
         } finally {
             closeJedis(jedis);
         }
-        return result;
     }
 
     /**
-     * see {@link #hmsetObjects(Object, Map, int)}
+     * see {@link #hmset(Object, Map, int)}
+     * <p>
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hmset.html">hmset</a> to see detail
      *
      * @param key
      * @param beanMap
      */
-    public static void hmsetObjects(Object key, Map<? extends Object, ? extends Object> beanMap) {
-        hmsetObjects(key, beanMap, KEY_DEFAULT_EXPIRE_TIMEOUT);
+    public static void hmset(Object key, Map<? extends Object, ? extends Object> beanMap) {
+        hmset(key, beanMap, KEY_DEFAULT_EXPIRE_TIMEOUT);
     }
 
     /**
      * Set the respective fields to the respective values. HMSET replaces old
      * values with new values.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hmset.html">hmset</a> to see detail
      *
      * @param key
      * @param beanMap
      * @param seconds
      */
-    public static void hmsetObjects(Object key, Map<? extends Object, ? extends Object> beanMap, int seconds) {
+    public static void hmset(Object key, Map<? extends Object, ? extends Object> beanMap, int seconds) {
         Jedis jedis = null;
         if (CollectionUtils.isEmpty(beanMap)) {
             LOGGER.warn("param 'beanMap' is empty");
@@ -447,36 +502,39 @@ public class Redis {
 
     /**
      * Retrieve one value associated to the specified field.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hmget.html">hgset</a> to see detail
      *
      * @param key
      * @param field
      * @return
      */
-    public static Object hmgetObject(Object key, Object field) {
+    public static <T> T hmget(Object key, Object field) {
         Jedis jedis = null;
-        Object result = null;
         try {
             jedis = getJedis();
             byte[] bytes = CollectionHelper.getMostOneFromCollection(
                     jedis.hmget(SerializeUtil.serialize(key), SerializeUtil.serialize(field))
             );
-            result = SerializeUtil.deserialize(bytes);
+            return SerializeUtil.deserialize(bytes);
         } finally {
             closeJedis(jedis);
         }
-        return result;
     }
 
     /**
      * Retrieve the values associated to the specified fields.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hmget.html">hgset</a> to see detail
      *
      * @param key
-     * @param kclass
      * @param fields
      * @param <T>
      * @return
      */
-    public static <T> List<T> hmgetObjects(Object key, Class<T> kclass, Object... fields) {
+    public static <T> List<T> hmget(Object key, Object... fields) {
         Jedis jedis = null;
         List<T> result = null;
         if (null == fields || fields.length == 0) {
@@ -504,43 +562,10 @@ public class Redis {
     }
 
     /**
-     * Retrieve the values associated to the specified fields.
-     *
-     * @param key
-     * @param kclass
-     * @param fieldList
-     * @param <T>
-     * @return
-     */
-    public static <T> List<T> hmgetObjects(Object key, Class<T> kclass, List<? extends Object> fieldList) {
-        Jedis jedis = null;
-        List<T> result = null;
-        if (CollectionUtils.isEmpty(fieldList)) {
-            return null;
-        }
-
-        try {
-            byte[][] inBytes = new byte[fieldList.size()][];
-            for (int i = 0; i < fieldList.size(); i++) {
-                inBytes[i] = (SerializeUtil.serialize(fieldList.get(i)));
-            }
-
-            jedis = getJedis();
-            List<byte[]> bytes = jedis.hmget(SerializeUtil.serialize(key), inBytes);
-            if (null != bytes) {
-                result = new ArrayList<T>();
-                for (int i = 0; i < bytes.size(); i++) {
-                    result.add((T) SerializeUtil.deserialize(bytes.get(i)));
-                }
-            }
-        } finally {
-            closeJedis(jedis);
-        }
-        return result;
-    }
-
-    /**
      * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/expire.html">expire</a> to see detail
      *
      * @param key
      * @param seconds duration seconds
@@ -562,36 +587,79 @@ public class Redis {
     /**
      * Set a expired time on the specified key
      * the key will be  automatically deleted by the server at unixTime
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/expireat.html">expireat</a> to see detail
      *
      * @param key
      * @param unixTime Number of seconds elapsed since 1 Gen 1970
      * @return
      */
-    public static Long expireAt(String key, long unixTime) {
+    public static Long expireAt(Object key, long unixTime) {
         Jedis jedis = null;
         Long result;
         try {
             jedis = getJedis();
-            result = jedis.expireAt(key, unixTime);
+            result = jedis.expireAt(SerializeUtil.serialize(key), unixTime);
         } finally {
             closeJedis(jedis);
         }
         return result;
     }
 
-
     /**
-     * Test if the specified key exists.
+     * returns the remaining time to live in seconds of a key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/ttl.html">ttl</a> to see detail
      *
      * @param key
      * @return
      */
-    public static Boolean exists(String key) {
+    public static Long ttl(Object key) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.ttl(SerializeUtil.serialize(key));
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * returns the remaining time to live in millisecond of a key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/pttl.html">pttl</a> to see detail
+     *
+     * @param key
+     * @return
+     */
+    public static Long pttl(Object key) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.pttl(SerializeUtil.serialize(key));
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Test if the specified key exists.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/exists.html">exists</a> to see detail
+     *
+     * @param key
+     * @return
+     */
+    public static Boolean exists(Object key) {
         Jedis jedis = null;
         Boolean result = null;
         try {
             jedis = getJedis();
-            result = jedis.exists(key);
+            result = jedis.exists(SerializeUtil.serialize(key));
         } finally {
             closeJedis(jedis);
         }
@@ -600,6 +668,9 @@ public class Redis {
 
     /**
      * Remove the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/del.html">del</a> to see detail
      *
      * @param key
      * @return the number of key removed.
@@ -615,18 +686,11 @@ public class Redis {
     }
 
     /**
-     * see {@link #del(Object...)}
-     *
-     * @param keys
-     * @return
-     */
-    public static Long del(List<? extends Object> keys) {
-        return del(keys.toArray());
-    }
-
-    /**
      * Remove the specified keys. If a given key does not exist no operation is
      * performed for this key.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/del.html">del</a> to see detail
      *
      * @param keys
      * @return the number of keys removed.
@@ -647,6 +711,9 @@ public class Redis {
 
     /**
      * Remove the specified field from an hash stored at key.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hdel.html">hdel</a> to see detail
      *
      * @param key
      * @param field
@@ -665,20 +732,371 @@ public class Redis {
         return result;
     }
 
+    /**
+     * Remove the  fields from an hash stored at key.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hdel.html">hdel</a> to see detail
+     *
+     * @param key
+     * @param fields
+     * @return If the field was present in the hash it is deleted and 1 is
+     * returned, otherwise 0 is returned and no operation is performed.
+     */
+    public static Long hdel(Object key, Object... fields) {
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            jedis = getJedis();
+            byte[][] bytes = new byte[fields.length][];
+            for (int i = 0; i < fields.length; i++) {
+                bytes[i] = SerializeUtil.serialize(fields[i]);
+            }
+            result = jedis.hdel(SerializeUtil.serialize(key), bytes);
+        } finally {
+            closeJedis(jedis);
+        }
+        return result;
+    }
+
 
     /**
      * Returns all the keys matching the glob-style pattern as space separated
      * strings. For example if you have in the database the keys "foo" and
      * "foobar" the command "KEYS foo*" will return "foo foobar".
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/keys.html">keys</a> to see detail
      *
      * @param pattern
      * @return
      */
-    public static Set<String> keys(String pattern) {
+    public static <T> Set<T> keys(Object pattern) {
         Jedis jedis = null;
         try {
             jedis = getJedis();
-            return jedis.keys(pattern);
+
+            Set<byte[]> bytes = jedis.keys(SerializeUtil.serialize(pattern));
+            Set<T> sets = new HashSet<T>(bytes.size());
+            Iterator iterator = bytes.iterator();
+            while (iterator.hasNext()) {
+                sets.add((T) SerializeUtil.deserialize((byte[]) iterator.next()));
+            }
+            return sets;
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Delete all the keys of the currently selected DB. This command never fails.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/flushdb.html">flushdb</a> to see detail
+     */
+    public static void fulshDB() {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            jedis.flushDB();
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * see {@link #incrBy(Object, long)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/incr.html">incr</a> to see detail
+     *
+     * @param key
+     * @return
+     */
+    public static Long incr(Object key) {
+        return incrBy(key, 1L);
+    }
+
+    /**
+     * See {@link #incrBy(Object, long, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/incr.html">incr</a> to see detail
+     *
+     * @param key
+     * @param seconds
+     * @return
+     */
+    public static Long incr(Object key, int seconds) {
+        return incrBy(key, 1L, seconds);
+    }
+
+    /**
+     * Increment the number stored at key by 'number'. If the key does not exist or
+     * contains a value of a wrong type, set the key to the value of "number" before
+     * to perform the increment operation.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/incrby.html">incrby</a> to see detail
+     *
+     * @param key
+     * @param number
+     * @return
+     */
+    public static Long incrBy(Object key, long number) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.incrBy(SerializeUtil.serialize(key), number);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Increment the number stored at key by 'number'. If the key does not exist or
+     * contains a value of a wrong type, set the key to the value of "0" before
+     * to perform the increment operation.
+     * <p>
+     * And Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/incrby.html">incrby</a> to see detail
+     *
+     * @param key
+     * @param number
+     * @param seconds
+     * @return
+     */
+    public static Long incrBy(Object key, long number, int seconds) {
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            jedis = getJedis();
+            result = jedis.incrBy(SerializeUtil.serialize(key), number);
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+            return result;
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * See {@link #decrBy(Object, long)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/decr.html">decr</a> to see detail
+     *
+     * @param key
+     * @return
+     */
+    public static Long decr(String key) {
+        return decrBy(key, 1L);
+    }
+
+    /**
+     * See {@link #decrBy(Object, long, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/decr.html">decr</a> to see detail
+     *
+     * @param key
+     * @param seconds
+     * @return
+     */
+    public static Long decr(Object key, int seconds) {
+        return decrBy(key, 1L, seconds);
+    }
+
+    /**
+     * Decrement the number stored at key by 'number'. If the key does not exist or
+     * contains a value of a wrong type, set the key to the value of "0" before
+     * to perform the increment operation.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/decrby.html">decrby</a> to see detail
+     *
+     * @param key
+     * @param number
+     * @return
+     */
+    public static Long decrBy(Object key, long number) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.decrBy(SerializeUtil.serialize(key), number);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Decrement the number stored at key by 'number'. If the key does not exist or
+     * contains a value of a wrong type, set the key to the value of "0" before
+     * to perform the increment operation.
+     * And Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/decrby.html">decrby</a> to see detail
+     *
+     * @param key
+     * @param number
+     * @param seconds
+     * @return
+     */
+    public static Long decrBy(Object key, long number, int seconds) {
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            jedis = getJedis();
+            result = jedis.decrBy(SerializeUtil.serialize(key), number);
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+            return result;
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * See {@link #hincrBy(Object, Object, long)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrby.html">hincrby</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @return
+     */
+    public static Long hincr(Object key, Object field) {
+        return hincrBy(key, field, 1L);
+    }
+
+    /**
+     * Increment the number stored at field in the hash at key by value. If key
+     * does not exist, a new key holding a hash is created. If field does not
+     * exist or holds a string, the value is set to 0 before applying the
+     * operation. Since the value argument is signed you can use this command to
+     * perform both increments and decrements.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrby.html">hincrby</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     * @return Integer reply The new value at field after the increment
+     * operation.
+     */
+    public static Long hincrBy(Object key, Object field, long value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.hincrBy(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * See {@link #hincrBy(Object, Object, long, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrby.html">hincrby</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param seconds
+     * @return
+     */
+    public static Long hincr(Object key, Object field, int seconds) {
+        return hincrBy(key, field, 1L, seconds);
+    }
+
+    /**
+     * Increment the number stored at field in the hash at key by value. If key
+     * does not exist, a new key holding a hash is created. If field does not
+     * exist or holds a string, the value is set to 0 before applying the
+     * operation. Since the value argument is signed you can use this command to
+     * perform both increments and decrements.
+     * <p>
+     * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrby.html">hincrby</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     * @param seconds
+     * @return Integer reply The new value at field after the increment
+     * operation.
+     */
+    public static Long hincrBy(Object key, Object field, long value, int seconds) {
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            jedis = getJedis();
+            result = jedis.hincrBy(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+            return result;
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Increment the number stored at field in the hash at key by value. If key
+     * does not exist, a new key holding a hash is created. If field does not
+     * exist or holds a string, the value is set to 0 before applying the
+     * operation. Since the value argument is signed you can use this command to
+     * perform both increments and decrements.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrbyfloat.html">hincrbyfloat</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     * @return Double precision floating point reply The new value at field
+     * after the increment operation.
+     */
+    public static Double hincrBy(Object key, Object field, double value) {
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.hincrByFloat(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
+        } finally {
+            closeJedis(jedis);
+        }
+    }
+
+    /**
+     * Increment the number stored at field in the hash at key by value. If key
+     * does not exist, a new key holding a hash is created. If field does not
+     * exist or holds a string, the value is set to 0 before applying the
+     * operation. Since the value argument is signed you can use this command to
+     * perform both increments and decrements.
+     * <p>
+     * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/hincrbyfloat.html">hincrbyfloat</a> to see detail
+     *
+     * @param key
+     * @param field
+     * @param value
+     * @param seconds
+     * @return Double precision floating point reply The new value at field
+     * after the increment operation.
+     */
+    public static Double hincrBy(Object key, Object field, double value, int seconds) {
+        Jedis jedis = null;
+        Double result = null;
+        try {
+            jedis = getJedis();
+            result = jedis.hincrByFloat(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
+            jedis.expire(SerializeUtil.serialize(key), seconds);
+            return result;
         } finally {
             closeJedis(jedis);
         }
@@ -687,7 +1105,13 @@ public class Redis {
     /**
      * Return the specified elements of the list stored at the specified key.
      * Start and end are zero-based indexes. 0 is the first element of the list
-     * (the list head), 1 the next element and so on.
+     * (the list head), 1 the next element, and -1 is the last element, -2 is the
+     * second last element and so on
+     * <p>
+     * start should be less than end
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lrange.html">lrange</a> to see detail
      *
      * @param key
      * @param start
@@ -717,263 +1141,10 @@ public class Redis {
     }
 
     /**
-     * see {@link #incrBy(Object, long)}
-     *
-     * @param key
-     * @return
-     */
-    public static Long incr(Object key) {
-        return incrBy(key, 1L);
-    }
-
-    /**
-     * See {@link #incrBy(Object, long, int)}
-     *
-     * @param key
-     * @param seconds
-     * @return
-     */
-    public static Long incr(Object key, int seconds) {
-        return incrBy(key, 1L, seconds);
-    }
-
-    /**
-     * Increment the number stored at key by 'number'. If the key does not exist or
-     * contains a value of a wrong type, set the key to the value of "number" before
-     * to perform the increment operation.
-     *
-     * @param key
-     * @param number
-     * @return
-     */
-    public static Long incrBy(Object key, long number) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            return jedis.incrBy(SerializeUtil.serialize(key), number);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Increment the number stored at key by 'number'. If the key does not exist or
-     * contains a value of a wrong type, set the key to the value of "0" before
-     * to perform the increment operation.
-     * <p>
-     * And Set a timeout on the specified key
-     *
-     * @param key
-     * @param number
-     * @param seconds
-     * @return
-     */
-    public static Long incrBy(Object key, long number, int seconds) {
-        Jedis jedis = null;
-        Long result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.incrBy(SerializeUtil.serialize(key), number);
-            jedis.expire(SerializeUtil.serialize(key), seconds);
-            return result;
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * See {@link #decrBy(Object, long)}
-     *
-     * @param key
-     * @return
-     */
-    public static Long decr(String key) {
-        return decrBy(key, 1L);
-    }
-
-    /**
-     * See {@link #decrBy(Object, long, int)}
-     *
-     * @param key
-     * @param seconds
-     * @return
-     */
-    public static Long decr(Object key, int seconds) {
-        return decrBy(key, 1L, seconds);
-    }
-
-    /**
-     * Decrement the number stored at key by 'number'. If the key does not exist or
-     * contains a value of a wrong type, set the key to the value of "0" before
-     * to perform the increment operation.
-     *
-     * @param key
-     * @param number
-     * @return
-     */
-    public static Long decrBy(Object key, long number) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            return jedis.decrBy(SerializeUtil.serialize(key), number);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Decrement the number stored at key by 'number'. If the key does not exist or
-     * contains a value of a wrong type, set the key to the value of "0" before
-     * to perform the increment operation.
-     * And Set a timeout on the specified key
-     *
-     * @param key
-     * @param number
-     * @param seconds
-     * @return
-     */
-    public static Long decrBy(Object key, long number, int seconds) {
-        Jedis jedis = null;
-        Long result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.decrBy(SerializeUtil.serialize(key), number);
-            jedis.expire(SerializeUtil.serialize(key), seconds);
-            return result;
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * See {@link #hincrBy(Object, Object, long)}
-     *
-     * @param key
-     * @param field
-     * @return
-     */
-    public static Long hincr(Object key, Object field) {
-        return hincrBy(key, field, 1L);
-    }
-
-    /**
-     * Increment the number stored at field in the hash at key by value. If key
-     * does not exist, a new key holding a hash is created. If field does not
-     * exist or holds a string, the value is set to 0 before applying the
-     * operation. Since the value argument is signed you can use this command to
-     * perform both increments and decrements.
-     *
-     * @param key
-     * @param field
-     * @param value
-     * @return Integer reply The new value at field after the increment
-     * operation.
-     */
-    public static Long hincrBy(Object key, Object field, long value) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            return jedis.hincrBy(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * See {@link #hincrBy(Object, Object, long, int)}
-     *
-     * @param key
-     * @param field
-     * @param seconds
-     * @return
-     */
-    public static Long hincr(Object key, Object field, int seconds) {
-        return hincrBy(key, field, 1L, seconds);
-    }
-
-    /**
-     * Increment the number stored at field in the hash at key by value. If key
-     * does not exist, a new key holding a hash is created. If field does not
-     * exist or holds a string, the value is set to 0 before applying the
-     * operation. Since the value argument is signed you can use this command to
-     * perform both increments and decrements.
-     * <p>
-     * Set a timeout on the specified key
-     *
-     * @param key
-     * @param field
-     * @param value
-     * @param seconds
-     * @return Integer reply The new value at field after the increment
-     * operation.
-     */
-    public static Long hincrBy(Object key, Object field, long value, int seconds) {
-        Jedis jedis = null;
-        Long result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.hincrBy(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
-            jedis.expire(SerializeUtil.serialize(key), seconds);
-            return result;
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Increment the number stored at field in the hash at key by value. If key
-     * does not exist, a new key holding a hash is created. If field does not
-     * exist or holds a string, the value is set to 0 before applying the
-     * operation. Since the value argument is signed you can use this command to
-     * perform both increments and decrements.
-     *
-     * @param key
-     * @param field
-     * @param value
-     * @return Double precision floating point reply The new value at field
-     * after the increment operation.
-     */
-    public static Double hincrBy(Object key, Object field, double value) {
-        Jedis jedis = null;
-        try {
-            jedis = getJedis();
-            return jedis.hincrByFloat(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
-     * Increment the number stored at field in the hash at key by value. If key
-     * does not exist, a new key holding a hash is created. If field does not
-     * exist or holds a string, the value is set to 0 before applying the
-     * operation. Since the value argument is signed you can use this command to
-     * perform both increments and decrements.
-     * <p>
-     * Set a timeout on the specified key
-     *
-     * @param key
-     * @param field
-     * @param value
-     * @param seconds
-     * @return Double precision floating point reply The new value at field
-     * after the increment operation.
-     */
-    public static Double hincrBy(Object key, Object field, double value, int seconds) {
-        Jedis jedis = null;
-        Double result = null;
-        try {
-            jedis = getJedis();
-            result = jedis.hincrByFloat(SerializeUtil.serialize(key), SerializeUtil.serialize(field), value);
-            jedis.expire(SerializeUtil.serialize(key), seconds);
-            return result;
-        } finally {
-            closeJedis(jedis);
-        }
-    }
-
-    /**
      * See {@link #rpush(Object, Object, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/rpush.html">rpush</a> to see detail
      *
      * @param key
      * @param value
@@ -988,6 +1159,9 @@ public class Redis {
      * stored at key. If the key does not exist an empty list is created just
      * before the append operation. If the key exists but is not a List an error
      * is returned.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/rpush.html">rpush</a> to see detail
      *
      * @param key
      * @param value
@@ -1010,6 +1184,9 @@ public class Redis {
 
     /**
      * See {@link #rpush(Object, int, Object...)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/rpush.html">rpush</a> to see detail
      *
      * @param key
      * @param values
@@ -1021,6 +1198,9 @@ public class Redis {
 
     /**
      * See {@link #rpush(Object, Object, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/rpush.html">rpush</a> to see detail
      *
      * @param key
      * @param seconds
@@ -1048,13 +1228,28 @@ public class Redis {
 
     /**
      * See {@link #lpush(Object, Object, int)}
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lpush.html">lpush</a> to see detail
      *
      * @param key
      * @param value
      * @return
      */
     public static Long lpush(Object key, Object value) {
-        return lpush(key, value, KEY_DEFAULT_EXPIRE_TIMEOUT);
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            jedis = getJedis();
+            result = jedis.lpush(SerializeUtil.serialize(key), SerializeUtil.serialize(value));
+            if (result == 1L) {
+                // result = values element length,indicate the list is new to create
+                jedis.expire(SerializeUtil.serialize(key), KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+            return result;
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     /**
@@ -1062,6 +1257,9 @@ public class Redis {
      * stored at key. If the key does not exist an empty list is created just
      * before the append operation. If the key exists but is not a List an error
      * is returned.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lpush.html">lpush</a> to see detail
      *
      * @param key
      * @param value
@@ -1082,14 +1280,36 @@ public class Redis {
     }
 
     /**
-     * See {@link #lpush(Object, int, Object...)}
+     * Add the string value to the head (LPUSH) or tail (RPUSH) of the list
+     * stored at key. If the key does not exist an empty list is created just
+     * before the append operation. If the key exists but is not a List an error
+     * is returned.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lpush.html">lpush</a> to see detail
      *
      * @param key
      * @param values
      * @return
      */
     public static Long lpush(Object key, Object... values) {
-        return lpush(key, KEY_DEFAULT_EXPIRE_TIMEOUT, values);
+        Jedis jedis = null;
+        Long result = null;
+        try {
+            byte[][] bytes = new byte[values.length][];
+            for (int i = 0; i < values.length; i++) {
+                bytes[i] = SerializeUtil.serialize(values[i]);
+            }
+            jedis = getJedis();
+            result = jedis.lpush(SerializeUtil.serialize(key), bytes);
+            if (result == values.length) {
+                // result = values element length,indicate the list is new to create
+                jedis.expire(SerializeUtil.serialize(key), KEY_DEFAULT_EXPIRE_TIMEOUT);
+            }
+            return result;
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     /**
@@ -1097,13 +1317,18 @@ public class Redis {
      * stored at key. If the key does not exist an empty list is created just
      * before the append operation. If the key exists but is not a List an error
      * is returned.
+     * <p>
+     * Set a timeout on the specified key
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lpush.html">lpush</a> to see detail
      *
      * @param key
      * @param seconds
      * @param values
      * @return
      */
-    public static Long lpush(Object key, int seconds, Object... values) {
+    public static Long lpushWithExpire(int seconds, Object key, Object... values) {
         Jedis jedis = null;
         Long result = null;
         try {
@@ -1125,6 +1350,10 @@ public class Redis {
      * the list. For example if the list contains the elements "a","b","c" LPOP
      * will return "a" and the list will become "b","c".
      *
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/rpop.html">rpop</a> to see detail
+     *
      * @param key
      * @param <T>
      * @return
@@ -1145,6 +1374,10 @@ public class Redis {
      * the list. For example if the list contains the elements "a","b","c" LPOP
      * will return "a" and the list will become "b","c".
      *
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/lpop.html">lpop</a> to see detail
+     *
      * @param key
      * @param <T>
      * @return
@@ -1160,7 +1393,15 @@ public class Redis {
         }
     }
 
-
+    /**
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/blpop.html">blpop</a> to see detail
+     *
+     * @param keys
+     * @param <T>
+     * @return
+     */
     public static <T> T blpop(Object... keys) {
         Jedis jedis = null;
         try {
@@ -1184,12 +1425,16 @@ public class Redis {
      * commands as blocking versions of LPOP and RPOP able to block if the
      * specified keys don't exist or contain empty lists.
      *
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/blpop.html">blpop</a> to see detail
+     *
      * @param timeout
      * @param keys
      * @param <T>
      * @return
      */
-    public static <T> T blpop(int timeout, Object... keys) {
+    public static <T> T blpopWithTimeout(int timeout, Object... keys) {
         Jedis jedis = null;
         try {
             jedis = getJedis();
@@ -1208,6 +1453,15 @@ public class Redis {
     }
 
 
+    /**
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/brpop.html">brpop</a> to see detail
+     *
+     * @param keys
+     * @param <T>
+     * @return
+     */
     public static <T> T brpop(Object... keys) {
         Jedis jedis = null;
         try {
@@ -1230,13 +1484,16 @@ public class Redis {
      * BLPOP (and BRPOP) is a blocking list pop primitive. You can see this
      * commands as blocking versions of LPOP and RPOP able to block if the
      * specified keys don't exist or contain empty lists.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/brpop.html">brpop</a> to see detail
      *
      * @param timeout
      * @param keys
      * @param <T>
      * @return
      */
-    public static <T> T brpop(int timeout, Object... keys) {
+    public static <T> T brpopWithTimeout(int timeout, Object... keys) {
         Jedis jedis = null;
         try {
             jedis = getJedis();
@@ -1258,6 +1515,9 @@ public class Redis {
      * Return the length of the list stored at the specified key. If the key
      * does not exist zero is returned (the same behaviour as for empty lists).
      * If the value stored at key is not a list an error is returned.
+     * <p>
+     * <p>
+     * click  <a href="http://www.redis.cn/commands/llen.html">llen</a> to see detail
      *
      * @param key
      * @return
