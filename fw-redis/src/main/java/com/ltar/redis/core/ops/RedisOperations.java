@@ -2,9 +2,12 @@ package com.ltar.redis.core.ops;
 
 import com.ltar.redis.constant.DataType;
 import org.springframework.lang.Nullable;
+import redis.clients.jedis.ScanParams;
+import redis.clients.jedis.ScanResult;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -17,16 +20,6 @@ import java.util.concurrent.TimeUnit;
  * @version: 1.0.0
  */
 public interface RedisOperations {
-
-    /**
-     * Determine if given {@code key} exists.
-     *
-     * @param key
-     * @return true if the key was removed.
-     * @see <a href="http://redis.io/commands/del">Redis Documentation: DEL</a>
-     */
-    @Nullable
-    <K> Boolean exists(K key);
 
     /**
      * Delete given {@code key}.
@@ -48,42 +41,23 @@ public interface RedisOperations {
     <K> Long delete(Collection<K> keys);
 
     /**
-     * Determine the type stored at {@code key}.
+     * todo
      *
-     * @param key must not be {@literal null}.
+     * @param key
      * @return
      */
     @Nullable
-    <K> DataType type(K key);
+    <K> byte[] dump(final K key);
 
     /**
-     * Find all keys matching the given {@code pattern}.
+     * Determine if given {@code key} exists.
      *
-     * @param pattern
-     * @return
+     * @param key
+     * @return true if the key was removed.
+     * @see <a href="http://redis.io/commands/del">Redis Documentation: DEL</a>
      */
     @Nullable
-    <K> Set<K> keys(K pattern);
-
-    /**
-     * Rename key {@code oldKey} to {@code newKey}.
-     *
-     * @param oldKey must not be {@literal null}.
-     * @param newKye must not be {@literal null}.
-     */
-    @Nullable
-    <K> void rename(K oldKey, K newKye);
-
-    /**
-     * Rename key {@code oleName} to {@code newKey} only if {@code newKey} does not exist.
-     *
-     * @param oldKey must not be {@literal null}.
-     * @param newKye must not be {@literal null}.
-     * @return Integer reply, specifically: 1 if the key was renamed 0 if the
-     * target key already exist
-     */
-    @Nullable
-    <K> Long renamenx(K oldKey, K newKye);
+    <K> Boolean exists(K key);
 
     /**
      * Set time to live for given {@code key}..
@@ -111,15 +85,15 @@ public interface RedisOperations {
     <K> Long expireAt(K key, Date date);
 
     /**
-     * Undo a  expire at turning the expire key into
-     * a normal key.
+     * Find all keys matching the given {@code pattern}.
      *
-     * @param key
-     * @return Integer reply, specifically: 1: the key is now persist. 0: the
-     * key is not persist (only happens when key not set).
+     * @param pattern
+     * @return
      */
     @Nullable
-    <K> Long persist(K key);
+    <K> Set<K> keys(K pattern);
+
+    <K> void migrate(String host, int port, K key, int destinationDb, final int timeout);
 
     /**
      * Move the specified key from the currently selected DB to the specified
@@ -138,13 +112,64 @@ public interface RedisOperations {
     <K> Boolean move(K key, int dbIndex);
 
     /**
-     * todo
+     * 该命令主要用于调试(debugging)，它能够返回指定key所对应value被引用的次数.
      *
      * @param key
+     * @param <K>
      * @return
      */
+    <K> Long objectRefCount(K key);
+
+    /**
+     * 该命令返回指定key对应value所使用的内部表示
+     *
+     * @param key
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    <K, V> V objectEncoding(K key);
+
+    /**
+     * 该命令返回指定key对应的value自被存储之后空闲的时间，以秒为单位(没有读写操作的请求) ，
+     * 这个值返回以10秒为单位的秒级别时间，这一点可能在以后的实现中改善
+     *
+     * @param key
+     * @param <K>
+     * @return
+     */
+    <K> Long objectIdletime(K key);
+
+    /**
+     * Undo a  expire at turning the expire key into
+     * a normal key.
+     *
+     * @param key
+     * @return Integer reply, specifically: 1: the key is now persist. 0: the
+     * key is not persist (only happens when key not set).
+     */
     @Nullable
-    byte[] dump(final String key);
+    <K> Long persist(K key);
+
+    /**
+     * Rename key {@code oldKey} to {@code newKey}.
+     *
+     * @param oldKey must not be {@literal null}.
+     * @param newKey must not be {@literal null}.
+     */
+    @Nullable
+    <K> void rename(K oldKey, K newKey);
+
+    /**
+     * Rename key {@code oleName} to {@code newKey} only if {@code newKey} does not exist.
+     *
+     * @param oldKey must not be {@literal null}.
+     * @param newKey must not be {@literal null}.
+     * @return Integer reply, specifically: 1 if the key was renamed 0 if the
+     * target key already exist
+     */
+    @Nullable
+    <K> Long renamenx(K oldKey, K newKey);
 
     /**
      * todo
@@ -163,7 +188,7 @@ public interface RedisOperations {
      * @param key
      * @return
      */
-    <K> Long getExpire(K key);
+    <K> Long ttl(K key);
 
     /**
      * Get the time to live for {@code key} in and convert it to the given {@link TimeUnit}.
@@ -173,32 +198,53 @@ public interface RedisOperations {
      * @return
      */
     @Nullable
-    <K> Long getExpire(K key, TimeUnit timeUnit);
+    <K> Long ttl(K key, TimeUnit timeUnit);
 
     /**
-     * todo
-     * Watch given {@code keys} for modifications during transaction started with {@link #multi()}.
+     * Determine the type stored at {@code key}.
      *
-     * @param keys
+     * @param key must not be {@literal null}.
+     * @return
      */
     @Nullable
-    <K> void watch(K... keys);
+    <K> DataType type(K key);
 
     /**
-     * Flushes all the previously {@link #watch(Object)} keys.
+     * 用于迭代当前数据库中的key集合
+     *
+     * @param cursor
+     * @param scanParams
+     * @param <K>
+     * @param <V>
+     * @return
      */
-    void unwatch();
+    <K, V> ScanResult<Map.Entry<K, V>> scan(String cursor, ScanParams scanParams);
 
-    /**
-     * todo
-     * Mark the start of a transaction block. <br>
-     */
-    void multi();
 
-    /**
-     * Discard all commands issued after {@link #multi()}.
-     */
-    void discard();
+//    /**
+//     * todo
+//     * Watch given {@code keys} for modifications during transaction started with {@link #multi()}.
+//     *
+//     * @param keys
+//     */
+//    @Nullable
+//    <K> void watch(K... keys);
+//
+//    /**
+//     * Flushes all the previously {@link #watch(Object)} keys.
+//     */
+//    void unwatch();
+//
+//    /**
+//     * todo
+//     * Mark the start of a transaction block. <br>
+//     */
+//    void multi();
+//
+//    /**
+//     * Discard all commands issued after {@link #multi()}.
+//     */
+//    void discard();
 
 
     // -------------------------------------------------------------------------
@@ -212,13 +258,6 @@ public interface RedisOperations {
      * @return
      */
     ClusterOperations ops4Cluster();
-
-    /**
-     * Returns geospatial specific operations interface.
-     *
-     * @return
-     */
-    GeoOperations ops4Geo();
 
     /**
      * Returns the operations performed on hash values.

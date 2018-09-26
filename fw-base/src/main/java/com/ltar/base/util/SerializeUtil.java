@@ -24,7 +24,7 @@ public final class SerializeUtil {
      * @param object
      * @return
      */
-    public static byte[] serialize(Object object) {
+    public static <T> byte[] serialize(T object) {
         if (object instanceof String) {
             return ((String) object).getBytes(UTF_8);
         } else {
