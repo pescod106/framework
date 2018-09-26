@@ -8,6 +8,7 @@ import com.ltar.redis.utils.TimeoutUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.SortingParams;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -196,6 +197,22 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    public List<String> sort(String key) {
+        return null;
+    }
+
+    public Long sort(String key, String dstkey) {
+        return null;
+    }
+
+    public List<String> sort(String key, SortingParams sortingParameters) {
+        return null;
+    }
+
+    public Long sort(String key, SortingParams sortingParameters, String dstkey) {
+        return null;
+    }
+
     public <K> Long ttl(K key) {
         Jedis jedis = null;
         try {
@@ -215,6 +232,10 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         } finally {
             closeJedis(jedis);
         }
+    }
+
+    public String randomKey() {
+        return null;
     }
 
 //    public <K> void watch(K... keys) {

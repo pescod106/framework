@@ -4,11 +4,9 @@ import com.ltar.redis.constant.DataType;
 import org.springframework.lang.Nullable;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.SortingParams;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -93,6 +91,17 @@ public interface RedisOperations {
     @Nullable
     <K> Set<K> keys(K pattern);
 
+    /**
+     * 将 key 原子性地从当前实例传送到目标实例的指定数据库上，一旦传送成功， key 保证会出现在目标实例上，而当前实例上的 key 会被删除。
+     *
+     * @param host
+     * @param port
+     * @param key
+     * @param destinationDb
+     * @param timeout
+     * @param <K>
+     * @see <a href="http://www.redis.cn/commands/migrate.html">MIGRATE</a>
+     */
     <K> void migrate(String host, int port, K key, int destinationDb, final int timeout);
 
     /**
@@ -152,6 +161,31 @@ public interface RedisOperations {
     <K> Long persist(K key);
 
     /**
+     * Get the time to live for {@code key} in seconds.
+     *
+     * @param key
+     * @return
+     */
+    <K> Long ttl(K key);
+
+    /**
+     * Get the time to live for {@code key} in and convert it to the given {@link TimeUnit}.
+     *
+     * @param key
+     * @param timeUnit
+     * @return
+     */
+    @Nullable
+    <K> Long ttl(K key, TimeUnit timeUnit);
+
+    /**
+     * 从当前数据库返回一个随机的key。
+     *
+     * @return
+     */
+    String randomKey();
+
+    /**
      * Rename key {@code oldKey} to {@code newKey}.
      *
      * @param oldKey must not be {@literal null}.
@@ -183,22 +217,38 @@ public interface RedisOperations {
     <K> void restore(K key, byte[] value, long timeToLive, TimeUnit unit);
 
     /**
-     * Get the time to live for {@code key} in seconds.
-     *
      * @param key
      * @return
+     * @see {@link #sort(String, SortingParams, String)}
      */
-    <K> Long ttl(K key);
+    List<String> sort(final String key);
 
     /**
-     * Get the time to live for {@code key} in and convert it to the given {@link TimeUnit}.
+     * @param key
+     * @param dstkey
+     * @return
+     * @see {@link #sort(String, SortingParams, String)}
+     */
+    Long sort(final String key, final String dstkey);
+
+    /**
+     * @param key
+     * @param sortingParameters
+     * @return
+     * @see {@link #sort(String, SortingParams, String)}
+     */
+    List<String> sort(final String key, final SortingParams sortingParameters);
+
+    /**
+     * 返回或存储key的list、 set 或sorted set 中的元素。默认是按照数值类型排序的，并且按照两个元素的双精度浮点数类型值进行比较
      *
      * @param key
-     * @param timeUnit
+     * @param sortingParameters
+     * @param dstkey
      * @return
+     * @see <a href="http://www.redis.cn/commands/sort.html">sort</a>
      */
-    @Nullable
-    <K> Long ttl(K key, TimeUnit timeUnit);
+    Long sort(final String key, final SortingParams sortingParameters, final String dstkey);
 
     /**
      * Determine the type stored at {@code key}.
