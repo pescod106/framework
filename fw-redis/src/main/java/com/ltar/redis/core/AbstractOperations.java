@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -18,7 +20,9 @@ import redis.clients.jedis.Jedis;
 @AllArgsConstructor
 @NoArgsConstructor
 abstract class AbstractOperations {
-    RedisTemplate redisTemplate;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractOperations.class);
+
+    protected RedisTemplate redisTemplate;
 
     Jedis getJedis() {
         return redisTemplate.getJedis();

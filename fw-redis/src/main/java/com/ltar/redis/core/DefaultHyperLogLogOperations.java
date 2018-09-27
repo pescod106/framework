@@ -13,4 +13,16 @@ public class DefaultHyperLogLogOperations extends AbstractOperations implements 
     public DefaultHyperLogLogOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
+
+    public <K, V> Long pfadd(K key, V... elements) {
+        return null;
+    }
+
+    public <K> Long pfcount(K... keys) {
+        return null;
+    }
+
+    public <K, V> void pfmerge(K destkey, V... sourcekeys) {
+
+    }
 }

@@ -1,5 +1,6 @@
 package com.ltar.redis.core.ops;
 
+import org.springframework.data.util.Pair;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
 
@@ -20,12 +21,12 @@ public interface HashOperations {
      * 如果 key 指定的哈希集不存在，它将被认为是一个空的哈希集，该命令将返回0。
      *
      * @param key
-     * @param field
+     * @param fields
      * @param <K>
      * @param <HK>
      * @return 返回从哈希集中成功移除的域的数量，不包括指出但不存在的那些域
      */
-    <K, HK> Long hdel(K key, HK... field);
+    <K, HK> Long hdel(K key, HK... fields);
 
     /**
      * 返回hash里面field是否存在
@@ -135,6 +136,8 @@ public interface HashOperations {
      */
     <K> void hmset(K key, Object... keysValues);
 
+    <K, HK, V> void hmset(K key, Map<HK, V> beanMap);
+
     /**
      * 设置 key 指定的哈希集中指定字段的值。
      * 如果 key 指定的哈希集不存在，会创建一个新的哈希集并与 key 关联。
@@ -149,7 +152,7 @@ public interface HashOperations {
      * @return 1如果field是一个新的字段
      * 0如果field原来在map里面已经存在
      */
-    <K, HK, V> Boolean hset(K key, HK field, V value);
+    <K, HK, V> void hset(K key, HK field, V value);
 
     /**
      * 只在 key 指定的哈希集中不存在指定的字段时，设置字段的值。
@@ -165,17 +168,6 @@ public interface HashOperations {
      * 0：如果哈希集中已存在该字段，没有操作被执行
      */
     <K, HK, V> Boolean hsetNx(K key, HK field, V value);
-
-    /**
-     * 返回hash指定field的value的字符串长度，如果hash或者field不存在，返回0.
-     *
-     * @param key
-     * @param field
-     * @param <K>
-     * @param <HK>
-     * @return 返回hash指定field的value的字符串长度，如果hash或者field不存在，返回0.
-     */
-    <K, HK> Boolean hStrLen(K key, HK field);
 
     /**
      * 返回 key 指定的哈希集中所有字段的值。
@@ -198,7 +190,7 @@ public interface HashOperations {
      * @param <HV>
      * @return
      */
-    <K, HK, HV> ScanResult<Map.Entry<HK, HV>> hscan(K key, String cursor, ScanParams scanParams);
+    <K, HK, HV> ScanResult<Pair<HK, HV>> hscan(K key, String cursor, ScanParams scanParams);
 
 
 }

@@ -22,9 +22,11 @@ import java.util.concurrent.TimeUnit;
 public class RedisTemplate extends RedisAccessor implements RedisOperations {
 
     private ClusterOperations ops4Cluster;
+    private ConnectionOperations ops4Connection;
     private HashOperations ops4Hash;
     private HyperLogLogOperations ops4HyperLogLog;
     private ListOperations ops4List;
+    private ServerOperations ops4Server;
     private SetOperations ops4Set;
     private SortedSetOperations ops4ZSet;
     private StringOperations ops4String;
@@ -166,15 +168,34 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
     }
 
     public <K> Long objectRefCount(K key) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.objectRefcount(SerializeUtil.serialize(key));
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public <K, V> V objectEncoding(K key) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            byte[] result = jedis.objectEncoding(SerializeUtil.serialize(key));
+            return SerializeUtil.deserialize(result);
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public <K> Long objectIdletime(K key) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.objectIdletime(SerializeUtil.serialize(key));
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public <K> byte[] dump(K key) {
@@ -235,7 +256,13 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
     }
 
     public String randomKey() {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.randomKey();
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
 //    public <K> void watch(K... keys) {
@@ -290,6 +317,13 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Cluster;
     }
 
+    public ConnectionOperations ops4Connection() {
+        if (null == ops4Connection) {
+            ops4Connection = new DefaultConnectionOperations(this);
+        }
+        return ops4Connection;
+    }
+
     public HashOperations ops4Hash() {
         if (null == ops4Hash) {
             ops4Hash = new DefaultHashOperations(this);
@@ -309,6 +343,13 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
             ops4List = new DefaultListOperations(this);
         }
         return ops4List;
+    }
+
+    public ServerOperations ops4Server() {
+        if (null == ops4Server) {
+            ops4Server = new DefaultServerOperations(this);
+        }
+        return ops4Server;
     }
 
     public SetOperations ops4Set() {
