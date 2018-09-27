@@ -197,7 +197,7 @@ public interface SortedSetOperations {
      * @param max
      * @return
      */
-    Set<byte[]> zrangeByScore(byte[] key, byte[] min, byte[] max);
+    <K, V> Set<V> zrangeByScore(K key, double min, double max);
 
     /**
      * 返回key的有序集合中的分数在min和max之间的所有元素（包括分数等于max或者min的元素）。
@@ -274,10 +274,9 @@ public interface SortedSetOperations {
      * @param start
      * @param end
      * @param <K>
-     * @param <V>
      * @return
      */
-    <K, V> Long zremrangeByScore(K key, double start, double end);
+    <K> Long zremrangeByScore(K key, double start, double end);
 
     /**
      * 返回有序集key中成员member的排名，其中有序集成员按score值从大到小排列。

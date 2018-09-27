@@ -23,6 +23,14 @@ public interface StringOperations {
     <K, V> Long append(K key, V value);
 
     /**
+     * @param key
+     * @param <K>
+     * @return
+     * @see {@link #bitCount(Object, long, long)}
+     */
+    <K> Long bitCount(K key);
+
+    /**
      * 统计字符串被设置为1的bit数.
      * <p>
      * 一般情况下，给定的整个字符串都会被进行计数，通过指定额外的 start 或 end 参数，可以让计数只在特定的位上进行。
@@ -104,7 +112,7 @@ public interface StringOperations {
      * @param <K>
      * @return
      */
-    <K> Boolean getBit(K key);
+    <K> Boolean getBit(K key, long offset);
 
     /**
      * 返回key对应的字符串value的子串，这个子串是由start和end位移决定的（两者都在string内）。
@@ -152,7 +160,7 @@ public interface StringOperations {
      * @param <K>
      * @return
      */
-    <K> Long incrBy(K key, int increment);
+    <K> Long incrBy(K key, long increment);
 
     /**
      * 通过指定浮点数key来增长浮点数(存放于string中)的值. 当键不存在时,先将其值设为0再操作.下面任一情况都会返回错误:
@@ -188,7 +196,7 @@ public interface StringOperations {
      * @return 1 如果所有的key被set
      * 0 如果没有key被set(至少其中有一个key是存在的)
      */
-    Long mset(Object... keysValues);
+    void mset(Object... keysValues);
 
     /**
      * PSETEX和SETEX一样，唯一的区别是到期时间以毫秒为单位,而不是秒。
@@ -199,7 +207,7 @@ public interface StringOperations {
      * @param <K>
      * @param <V>
      */
-    <K, V> void psetex(K key, V value, long milliseconds);
+    <K, V> void psetex(K key, V value, int milliseconds);
 
     /**
      * 将键key设定为指定的“字符串”值。

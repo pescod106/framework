@@ -2,6 +2,7 @@ package com.ltar.redis.core;
 
 import com.ltar.redis.core.ops.ConnectionOperations;
 import com.ltar.redis.impl.RedisTemplate;
+import redis.clients.jedis.Jedis;
 
 /**
  * @desc:
@@ -13,23 +14,54 @@ public class DefaultConnectionOperations extends AbstractOperations implements C
     public DefaultConnectionOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
+
     public String auth(String password) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.auth(password);
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public String echo(String string) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.echo(string);
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public String ping() {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.ping();
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public String quit() {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.quit();
+        } finally {
+            closeJedis(jedis);
+        }
     }
 
     public String select(int index) {
-        return null;
+        Jedis jedis = null;
+        try {
+            jedis = getJedis();
+            return jedis.select(index);
+        } finally {
+            closeJedis(jedis);
+        }
     }
 }
