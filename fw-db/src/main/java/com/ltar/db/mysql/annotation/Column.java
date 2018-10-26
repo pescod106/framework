@@ -1,4 +1,4 @@
-package com.ltar.db.annotation;
+package com.ltar.db.mysql.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,5 +15,5 @@ import static java.lang.annotation.ElementType.METHOD;
  */
 @Target({METHOD, FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Id {
+public @interface Column {
 }

@@ -17,6 +17,7 @@
         <module>fw-net</module>
         <module>fw-base</module>
         <module>fw-redis</module>
+        <module>fw-mq</module>
     </modules>
 
     <properties>

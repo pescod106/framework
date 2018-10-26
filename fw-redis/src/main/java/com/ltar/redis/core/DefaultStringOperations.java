@@ -21,7 +21,6 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         super(redisTemplate);
     }
 
-
     public <K, V> Long append(K key, V value) {
         Jedis jedis = null;
         try {
