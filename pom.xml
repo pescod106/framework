@@ -6,7 +6,7 @@
 
     <groupId>com.ltar</groupId>
     <artifactId>framework</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -34,6 +34,43 @@
     </properties>
 
     <dependencies>
+        <!--项目模块-->
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-db</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-json</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-mail</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-mq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-net</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ltar</groupId>
+            <artifactId>fw-redis</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    
         <!--Spring-->
         <dependency>
             <groupId>org.springframework</groupId>
