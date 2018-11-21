@@ -23,7 +23,7 @@
     <properties>
         <java.version>1.8</java.version>
         <project.build.encoding>UTF-8</project.build.encoding>
-        <spring.version>5.0.9.RELEASE</spring.version>
+        <spring.version>5.1.2.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
         <lombok.version>1.18.0</lombok.version>
         <slf4j.version>1.7.25</slf4j.version>
@@ -94,19 +94,14 @@
                 <artifactId>spring-context-support</artifactId>
                 <version>${spring.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.springframework</groupId>-->
+                <!--<artifactId>spring-jdbc</artifactId>-->
+                <!--<version>${spring.version}</version>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>${spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
                 <version>${spring.version}</version>
             </dependency>
 
@@ -213,6 +208,15 @@
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
             </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>central-apache</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
