@@ -310,6 +310,11 @@ public interface RedisOperations {
     ClusterOperations ops4Cluster();
 
     /**
+     * @return
+     */
+    ConnectionOperations ops4Connection();
+
+    /**
      * Returns the operations performed on hash values.
      *
      * @return
@@ -329,6 +334,11 @@ public interface RedisOperations {
      * @return
      */
     ListOperations ops4List();
+
+    /**
+     * @return
+     */
+    ServerOperations ops4Server();
 
     /**
      * Returns the operations performed on set values.

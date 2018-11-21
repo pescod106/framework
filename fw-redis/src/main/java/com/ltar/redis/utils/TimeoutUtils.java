@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @date: 2018/9/25
  * @version: 1.0.0
  */
-abstract public class TimeoutUtils {
+public class TimeoutUtils {
     public static final Long ONE_SECOND = 1000L;
     public static final Long ONE_MINUTE = 60 * ONE_SECOND;
     public static final Long ONE_HOUR = 60 * ONE_MINUTE;

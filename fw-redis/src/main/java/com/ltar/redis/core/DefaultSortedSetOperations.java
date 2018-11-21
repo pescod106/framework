@@ -14,10 +14,12 @@ import java.util.*;
  * @version: 1.0.0
  */
 public class DefaultSortedSetOperations extends AbstractOperations implements SortedSetOperations {
+
     public DefaultSortedSetOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
+    @Override
     public <K, V> Long zadd(K key, double score, V member) {
         Jedis jedis = null;
         try {
@@ -28,6 +30,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zadd(K key, Map<V, Double> scoreMembers) {
         Jedis jedis = null;
         try {
@@ -42,6 +45,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> Long zcard(K key) {
         Jedis jedis = null;
         try {
@@ -52,6 +56,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> Long zcount(K key, double min, double max) {
         Jedis jedis = null;
         try {
@@ -62,6 +67,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Double zincrby(K key, double score, V member) {
         Jedis jedis = null;
         try {
@@ -72,6 +78,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zinterstore(K dstkey, V... sets) {
         Jedis jedis = null;
         try {
@@ -86,6 +93,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zinterstore(K dstkey, ZParams params, V... sets) {
         Jedis jedis = null;
         try {
@@ -100,6 +108,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zlexcount(K key, V min, V max) {
         Jedis jedis = null;
         try {
@@ -110,6 +119,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrange(K key, long start, long end) {
         Jedis jedis = null;
         try {
@@ -126,6 +136,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrangeByLex(K key, V min, V max) {
         Jedis jedis = null;
         try {
@@ -142,6 +153,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrangeByLex(K key, V min, V max, int offset, int count) {
         Jedis jedis = null;
         try {
@@ -164,6 +176,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrevrange(K key, long start, long end) {
         Jedis jedis = null;
         try {
@@ -180,6 +193,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrevrangeByScore(K key, double max, double min) {
         Jedis jedis = null;
         try {
@@ -196,6 +210,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrangeByScore(K key, double min, double max) {
         Jedis jedis = null;
         try {
@@ -212,6 +227,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Set<V> zrangeByScore(K key, double min, double max, int offset, int count) {
         Jedis jedis = null;
         try {
@@ -228,6 +244,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zrank(K key, V member) {
         Jedis jedis = null;
         try {
@@ -238,6 +255,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zrem(K key, V... members) {
         Jedis jedis = null;
         try {
@@ -252,6 +270,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zremrangeByLex(K key, V min, V max) {
         Jedis jedis = null;
         try {
@@ -262,6 +281,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> Long zremrangeByRank(K key, long start, long end) {
         Jedis jedis = null;
         try {
@@ -272,6 +292,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> Long zremrangeByScore(K key, double start, double end) {
         Jedis jedis = null;
         try {
@@ -282,6 +303,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zrevrank(K key, V member) {
         Jedis jedis = null;
         try {
@@ -292,6 +314,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Double zscore(K key, V member) {
         Jedis jedis = null;
         try {
@@ -302,6 +325,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zunionstore(K dstkey, V... sets) {
         Jedis jedis = null;
         try {
@@ -316,6 +340,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K, V> Long zunionstore(K dstkey, ZParams params, V... sets) {
         Jedis jedis = null;
         try {
@@ -330,6 +355,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> ScanResult<Tuple> zscan(K key, String cursor) {
         Jedis jedis = null;
         try {
@@ -340,6 +366,7 @@ public class DefaultSortedSetOperations extends AbstractOperations implements So
         }
     }
 
+    @Override
     public <K> ScanResult<Tuple> zscan(K key, String cursor, ScanParams params) {
         Jedis jedis = null;
         try {

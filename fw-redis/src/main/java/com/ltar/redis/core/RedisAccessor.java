@@ -25,6 +25,7 @@ public class RedisAccessor implements InitializingBean {
 
     private RedisConnectionFactory connectionFactory;
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(getConnectionFactory(), "RedisConnectionFactory is required");
     }

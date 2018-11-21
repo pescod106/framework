@@ -18,6 +18,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         super(redisTemplate);
     }
 
+    @Override
     public void clusterAddSlots(int... slots) {
         Jedis jedis = null;
         try {
@@ -29,6 +30,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public Long clusterCountKeysInSlot(int slot) {
         Jedis jedis = null;
         try {
@@ -39,6 +41,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public void clusterDelSlots(int... slots) {
         Jedis jedis = null;
         try {
@@ -49,6 +52,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public void clusterFailover() {
         Jedis jedis = null;
         try {
@@ -60,6 +64,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterFlushSlots() {
         Jedis jedis = null;
         try {
@@ -71,6 +76,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterForget(String nodeId) {
         Jedis jedis = null;
         try {
@@ -82,6 +88,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public List<String> clusterGetKeysInSlot(int slot, int count) {
         Jedis jedis = null;
         try {
@@ -92,6 +99,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public String clusterInfo() {
         Jedis jedis = null;
         try {
@@ -102,6 +110,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public Long clusterKeySlot(String key) {
         Jedis jedis = null;
         try {
@@ -112,6 +121,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public void clusterMeet(String ip, int port) {
         Jedis jedis = null;
         try {
@@ -123,6 +133,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public String clusterNodes() {
         Jedis jedis = null;
         try {
@@ -134,6 +145,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         return null;
     }
 
+    @Override
     public void clusterReplicate(String nodeId) {
         Jedis jedis = null;
         try {
@@ -145,6 +157,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterReset(JedisCluster.Reset resetType) {
         Jedis jedis = null;
         try {
@@ -156,6 +169,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterSaveConfig() {
         Jedis jedis = null;
         try {
@@ -167,6 +181,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterSetSlotImporting(int slot, String nodeId) {
         Jedis jedis = null;
         try {
@@ -178,6 +193,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterSetSlotMigrating(int slot, String nodeId) {
         Jedis jedis = null;
         try {
@@ -189,6 +205,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterSetSlotNode(int slot, String nodeId) {
         Jedis jedis = null;
         try {
@@ -200,6 +217,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public void clusterSetSlotStable(int slot) {
         Jedis jedis = null;
         try {
@@ -211,6 +229,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
 
     }
 
+    @Override
     public List<String> clusterSlaves(String nodeId) {
         Jedis jedis = null;
         try {
@@ -221,6 +240,7 @@ public class DefaultClusterOperations extends AbstractOperations implements Clus
         }
     }
 
+    @Override
     public List<Object> clusterSlots() {
         Jedis jedis = null;
         try {

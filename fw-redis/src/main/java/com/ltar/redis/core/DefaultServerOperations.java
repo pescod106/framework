@@ -19,6 +19,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         super(redisTemplate);
     }
 
+    @Override
     public void bgrewriteaof() {
         Jedis jedis = null;
         try {
@@ -29,6 +30,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public void bgsave() {
         Jedis jedis = null;
         try {
@@ -40,6 +42,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void clientKill(String ip, int port) {
         Jedis jedis = null;
         try {
@@ -51,6 +54,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public String clientList() {
         Jedis jedis = null;
         try {
@@ -61,6 +65,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public String clientGetname() {
         Jedis jedis = null;
         try {
@@ -71,6 +76,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public String clientSetname(String name) {
         Jedis jedis = null;
         try {
@@ -81,6 +87,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public List<String> configGet(String pattern) {
         Jedis jedis = null;
         try {
@@ -91,6 +98,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public String configSet(String parameter, String value) {
         Jedis jedis = null;
         try {
@@ -101,6 +109,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public String configResetStat() {
         Jedis jedis = null;
         try {
@@ -111,6 +120,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public Long dbSize() {
         Jedis jedis = null;
         try {
@@ -121,6 +131,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public void flushAll() {
         Jedis jedis = null;
         try {
@@ -132,6 +143,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void flushDB() {
         Jedis jedis = null;
         try {
@@ -143,6 +155,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public String info() {
         Jedis jedis = null;
         try {
@@ -153,6 +166,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
         }
     }
 
+    @Override
     public String info(String section) {
         Jedis jedis = null;
         try {
@@ -164,6 +178,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public Long lastsave() {
         Jedis jedis = null;
         try {
@@ -175,6 +190,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void save() {
         Jedis jedis = null;
         try {
@@ -186,6 +202,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void shutdown() {
         Jedis jedis = null;
         try {
@@ -197,6 +214,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void slaveof(String host, int port) {
         Jedis jedis = null;
         try {
@@ -208,6 +226,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public List<Slowlog> slowlogGet() {
         Jedis jedis = null;
         try {
@@ -219,6 +238,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public List<Slowlog> slowlogGet(long entries) {
         Jedis jedis = null;
         try {
@@ -230,6 +250,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public Long slowlogLen() {
         Jedis jedis = null;
         try {
@@ -241,6 +262,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public String slowlogReset() {
         Jedis jedis = null;
         try {
@@ -252,6 +274,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public void sync() {
         Jedis jedis = null;
         try {
@@ -263,6 +286,7 @@ public class DefaultServerOperations extends AbstractOperations implements Serve
 
     }
 
+    @Override
     public List<String> time() {
         Jedis jedis = null;
         try {

@@ -16,10 +16,12 @@ import java.util.*;
  * @version: 1.0.0
  */
 public class DefaultSetOperations extends AbstractOperations implements SetOperations {
+
     public DefaultSetOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
+    @Override
     public <K, V> Long sadd(K key, V... values) {
         Jedis jedis = null;
         try {
@@ -34,6 +36,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K> Long scard(K key) {
         Jedis jedis = null;
         try {
@@ -44,6 +47,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Set<V> sdiff(K... keys) {
         Jedis jedis = null;
         try {
@@ -64,6 +68,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K> Long sdiffstore(K dstkey, K... keys) {
         Jedis jedis = null;
         try {
@@ -78,6 +83,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Set<V> sinter(K... keys) {
         Jedis jedis = null;
         try {
@@ -98,6 +104,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K> Long sinterstore(K dstkey, K... keys) {
         Jedis jedis = null;
         try {
@@ -112,6 +119,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Boolean sismember(K key, V member) {
         Jedis jedis = null;
         try {
@@ -122,6 +130,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Set<V> smembers(K key) {
         Jedis jedis = null;
         try {
@@ -138,6 +147,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Long smove(K srckey, K dstkey, V member) {
         Jedis jedis = null;
         try {
@@ -148,6 +158,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> V spop(K key) {
         Jedis jedis = null;
         try {
@@ -159,6 +170,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> V srandmember(K key) {
         Jedis jedis = null;
         try {
@@ -170,6 +182,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> List<V> srandmember(K key, int count) {
         Jedis jedis = null;
         try {
@@ -186,6 +199,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Long srem(K key, V... member) {
         Jedis jedis = null;
         try {
@@ -200,6 +214,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> Set<V> sunion(K... keys) {
         Jedis jedis = null;
         try {
@@ -220,6 +235,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K> Long sunionstore(K dstkey, K... keys) {
         Jedis jedis = null;
         try {
@@ -234,6 +250,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> ScanResult<V> sscan(K key, String cursor) {
         Jedis jedis = null;
         try {
@@ -250,6 +267,7 @@ public class DefaultSetOperations extends AbstractOperations implements SetOpera
         }
     }
 
+    @Override
     public <K, V> ScanResult<V> sscan(K key, String cursor, ScanParams params) {
         Jedis jedis = null;
         try {

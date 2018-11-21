@@ -21,6 +21,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         super(redisTemplate);
     }
 
+    @Override
     public <K, V> Long append(K key, V value) {
         Jedis jedis = null;
         try {
@@ -31,6 +32,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long bitCount(K key) {
         Jedis jedis = null;
         try {
@@ -41,6 +43,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long bitCount(K key, long start, long end) {
         Jedis jedis = null;
         try {
@@ -51,6 +54,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long bitPos(K key, boolean value) {
         Jedis jedis = null;
         try {
@@ -61,6 +65,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long bitPos(K key, boolean value, long start, long end) {
         Jedis jedis = null;
         try {
@@ -71,6 +76,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long decr(K key) {
         Jedis jedis = null;
         try {
@@ -81,6 +87,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long decrBy(K key, int decrement) {
         Jedis jedis = null;
         try {
@@ -91,6 +98,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <T, K> T get(K key) {
         Jedis jedis = null;
         try {
@@ -101,6 +109,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Boolean getBit(K key, long offset) {
         Jedis jedis = null;
         try {
@@ -111,6 +120,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K, V> V getRange(K key, long start, long end) {
         Jedis jedis = null;
         try {
@@ -122,6 +132,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K, V> V getSet(K key, V value) {
         Jedis jedis = null;
         try {
@@ -133,6 +144,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long incr(K key) {
         Jedis jedis = null;
         try {
@@ -143,6 +155,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long incrBy(K key, long increment) {
         Jedis jedis = null;
         try {
@@ -153,6 +166,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Double incrByFloat(K key, double increment) {
         Jedis jedis = null;
         try {
@@ -163,6 +177,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K, V> List<V> mget(K... keys) {
         Jedis jedis = null;
         try {
@@ -183,6 +198,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public void mset(Object... keysValues) {
         Jedis jedis = null;
         if (keysValues.length == 0 || keysValues.length % 2 != 0) {
@@ -200,7 +216,8 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
-    public <K, V> void psetex(K key, V value, int milliseconds) {
+    @Override
+    public <K, V> void psetex(K key, V value, long milliseconds) {
         Jedis jedis = null;
         try {
             jedis = getJedis();
@@ -211,6 +228,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
 
     }
 
+    @Override
     public <K, V> void set(K key, V value) {
         Jedis jedis = null;
         try {
@@ -221,6 +239,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K, V> void setEx(K key, V value, int seconds) {
         Jedis jedis = null;
         try {
@@ -232,6 +251,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
 
     }
 
+    @Override
     public <K, V> Long setNx(K key, V value) {
         Jedis jedis = null;
         try {
@@ -242,6 +262,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Boolean setBit(K key, long offset, boolean value) {
         Jedis jedis = null;
         try {
@@ -252,6 +273,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K, V> Long setRange(K key, V value, long offset) {
         Jedis jedis = null;
         try {
@@ -262,6 +284,7 @@ public class DefaultStringOperations extends AbstractOperations implements Strin
         }
     }
 
+    @Override
     public <K> Long strLen(K key) {
         Jedis jedis = null;
         try {

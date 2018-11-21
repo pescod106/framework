@@ -1,6 +1,7 @@
 package com.ltar.db.redis;
 
-import cn.huoqiu.base.util.JsonUtil;
+//import cn.huoqiu.base.util.JsonUtil;
+import com.ltar.json.util.JsonUtils;
 import org.junit.After;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class RedisTest extends BaseTest {
     //    @After()
     public void setAfter() {
         System.out.println("four info:");
-        System.out.println(Redis.get("four"));
+        System.out.println(Redis.get("four").toString());
         System.out.println(Redis.ttl("four"));
         System.out.println("---------------------");
     }
@@ -104,7 +105,7 @@ public class RedisTest extends BaseTest {
     //    @After
     public void afterH() {
         System.out.println("Five info:");
-        System.out.println(Redis.hget("five", "student"));
+        System.out.println(Redis.hget("five", "student").toString());
         System.out.println(Redis.ttl("five"));
         System.out.println("---------------------");
     }
@@ -130,11 +131,11 @@ public class RedisTest extends BaseTest {
     @After
     public void mapAfter() {
         System.out.println("six info:");
-        System.out.println(Redis.hmget("six", "string"));
+        System.out.println(Redis.hmget("six", "string").toString());
         System.out.println("===========");
-        System.out.println(Redis.hmget("six", "czg"));
+        System.out.println(Redis.hmget("six", "czg").toString());
         System.out.println("===========");
-        System.out.println(Redis.hmget("six", "changzhigao"));
+        System.out.println(Redis.hmget("six", "changzhigao").toString());
         System.out.println("++++++++++");
         System.out.println("----------------------");
     }
@@ -147,11 +148,11 @@ public class RedisTest extends BaseTest {
     @Test
     public void hmget() {
         System.out.println("six info:");
-        System.out.println(Redis.hmget("six", "string"));
+        System.out.println(Redis.hmget("six", "string").toString());
         System.out.println("===========");
-        System.out.println(Redis.hmget("six", "czg"));
+        System.out.println(Redis.hmget("six", "czg").toString());
         System.out.println("===========");
-        System.out.println(Redis.hmget("six", "changzhigao"));
+        System.out.println(Redis.hmget("six", "changzhigao").toString());
         System.out.println("++++++++++");
         System.out.println("----------------------");
     }
@@ -214,7 +215,7 @@ public class RedisTest extends BaseTest {
          */
         Redis.rpush("seven", generateStuList().toArray());
 
-        Redis.set("14", JsonUtil.dump(generateStrMap()));
+        Redis.set("14", JsonUtils.dump(generateStrMap()));
     }
 
     @Test
@@ -327,33 +328,33 @@ public class RedisTest extends BaseTest {
 
     @Test
     public void rpop() {
-        System.out.println(Redis.rpop("15"));
+        System.out.println(Redis.rpop("15").toString());
     }
 
     @Test
     public void lpop() {
-        System.out.println(Redis.lpop("15"));
+        System.out.println(Redis.lpop("15").toString());
     }
 
     @Test
     public void blpop() {
-        System.out.println(Redis.blpop("15", "12"));
+        System.out.println(Redis.blpop("15", "12").toString());
 
     }
 
     @Test
     public void blpop1() {
-        System.out.println(Redis.blpopWithTimeout(1, "15", "12"));
+        System.out.println(Redis.blpopWithTimeout(1, "15", "12").toString());
     }
 
     @Test
     public void brpop() {
-        System.out.println(Redis.brpop("15", "12"));
+        System.out.println(Redis.brpop("15", "12").toString());
     }
 
     @Test
     public void brpop1() {
-        System.out.println(Redis.brpopWithTimeout(1, "15", "12"));
+        System.out.println(Redis.brpopWithTimeout(1, "15", "12").toString());
     }
 
     @Test

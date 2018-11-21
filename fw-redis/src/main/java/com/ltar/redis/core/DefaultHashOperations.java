@@ -18,10 +18,12 @@ import java.util.*;
  * @version: 1.0.0
  */
 public class DefaultHashOperations extends AbstractOperations implements HashOperations {
+
     public DefaultHashOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
+    @Override
     public <K, HK> Long hdel(K key, HK... fields) {
         Jedis jedis = null;
         try {
@@ -36,6 +38,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK> Boolean hexists(K key, HK field) {
         Jedis jedis = null;
         try {
@@ -46,6 +49,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> V hget(K key, HK field) {
         Jedis jedis = null;
         try {
@@ -57,6 +61,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> Map<HK, V> hgetAll(K key) {
         Jedis jedis = null;
         try {
@@ -72,6 +77,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK> Long hincrBy(K key, HK field, long increment) {
         Jedis jedis = null;
         try {
@@ -82,6 +88,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK> Double hincrByFloat(K key, HK field, double increment) {
         Jedis jedis = null;
         try {
@@ -92,6 +99,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, V> Set<V> hkeys(K key) {
         Jedis jedis = null;
         try {
@@ -108,6 +116,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K> Long hlen(K key) {
         Jedis jedis = null;
         try {
@@ -118,6 +127,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> List<V> hmget(K key, HK... fields) {
         Jedis jedis = null;
         List<V> result = null;
@@ -145,6 +155,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         return result;
     }
 
+    @Override
     public <K> void hmset(K key, Object... keysValues) {
         if (keysValues.length == 0 || keysValues.length % 2 != 0) {
             throw new IllegalArgumentException("param is error,param keysValues must be even");
@@ -162,6 +173,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> void hmset(K key, Map<HK, V> beanMap) {
         Jedis jedis = null;
         if (CollectionUtils.isEmpty(beanMap)) {
@@ -183,6 +195,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> void hset(K key, HK field, V value) {
         Jedis jedis = null;
         try {
@@ -193,6 +206,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, V> Boolean hsetNx(K key, HK field, V value) {
         Jedis jedis = null;
         try {
@@ -203,6 +217,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, V> List<V> hvals(K key) {
         Jedis jedis = null;
         try {
@@ -219,6 +234,7 @@ public class DefaultHashOperations extends AbstractOperations implements HashOpe
         }
     }
 
+    @Override
     public <K, HK, HV> ScanResult<Pair<HK, HV>> hscan(K key, String cursor, ScanParams scanParams) {
         Jedis jedis = null;
         try {

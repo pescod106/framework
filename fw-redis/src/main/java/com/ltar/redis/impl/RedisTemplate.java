@@ -31,6 +31,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
     private SortedSetOperations ops4ZSet;
     private StringOperations ops4String;
 
+    @Override
     public <K> Boolean exists(K key) {
         Jedis jedis = null;
         try {
@@ -41,6 +42,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Boolean delete(K key) {
         Jedis jedis = null;
         try {
@@ -51,6 +53,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long delete(Collection<K> keys) {
         Jedis jedis = null;
         try {
@@ -67,6 +70,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> DataType type(K key) {
         Jedis jedis = null;
         try {
@@ -78,10 +82,12 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K, V> ScanResult<Map.Entry<K, V>> scan(String cursor, ScanParams scanParams) {
         return null;
     }
 
+    @Override
     public <K> Set<K> keys(K pattern) {
         Jedis jedis = null;
         try {
@@ -99,10 +105,12 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> void migrate(String host, int port, K key, int destinationDb, int timeout) {
 
     }
 
+    @Override
     public <K> void rename(K oldKey, K newKey) {
         Jedis jedis = null;
         try {
@@ -113,6 +121,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long renamenx(K oldKey, K newKey) {
         Jedis jedis = null;
         try {
@@ -123,6 +132,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long expire(K key, long timeout, TimeUnit timeUnit) {
         Jedis jedis = null;
         try {
@@ -137,6 +147,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long expireAt(K key, Date date) {
         Jedis jedis = null;
         try {
@@ -147,6 +158,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long persist(K key) {
         Jedis jedis = null;
         try {
@@ -157,6 +169,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Boolean move(K key, int dbIndex) {
         Jedis jedis = null;
         try {
@@ -167,6 +180,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long objectRefCount(K key) {
         Jedis jedis = null;
         try {
@@ -177,6 +191,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K, V> V objectEncoding(K key) {
         Jedis jedis = null;
         try {
@@ -188,6 +203,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long objectIdletime(K key) {
         Jedis jedis = null;
         try {
@@ -198,6 +214,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> byte[] dump(K key) {
         Jedis jedis = null;
         try {
@@ -208,6 +225,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> void restore(K key, byte[] value, long timeToLive, TimeUnit unit) {
         Jedis jedis = null;
         try {
@@ -218,22 +236,27 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public List<String> sort(String key) {
         return null;
     }
 
+    @Override
     public Long sort(String key, String dstkey) {
         return null;
     }
 
+    @Override
     public List<String> sort(String key, SortingParams sortingParameters) {
         return null;
     }
 
+    @Override
     public Long sort(String key, SortingParams sortingParameters, String dstkey) {
         return null;
     }
 
+    @Override
     public <K> Long ttl(K key) {
         Jedis jedis = null;
         try {
@@ -244,6 +267,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public <K> Long ttl(K key, TimeUnit timeUnit) {
         Jedis jedis = null;
         try {
@@ -255,6 +279,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+    @Override
     public String randomKey() {
         Jedis jedis = null;
         try {
@@ -265,6 +290,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         }
     }
 
+//    @Override
 //    public <K> void watch(K... keys) {
 //        Jedis jedis = null;
 //        try {
@@ -279,7 +305,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
 //        }
 //    }
 //
-//
+//@Override
 //    public void unwatch() {
 //        Jedis jedis = null;
 //        try {
@@ -289,7 +315,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
 //            closeJedis(jedis);
 //        }
 //    }
-//
+//@Override
 //    public void multi() {
 //        Jedis jedis = null;
 //        try {
@@ -299,7 +325,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
 //            closeJedis(jedis);
 //        }
 //    }
-//
+//@Override
 //    public void discard() {
 //        Jedis jedis = null;
 //        try {
@@ -310,6 +336,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
 //        }
 //    }
 
+    @Override
     public ClusterOperations ops4Cluster() {
         if (null == ops4Cluster) {
             ops4Cluster = new DefaultClusterOperations(this);
@@ -317,6 +344,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Cluster;
     }
 
+    @Override
     public ConnectionOperations ops4Connection() {
         if (null == ops4Connection) {
             ops4Connection = new DefaultConnectionOperations(this);
@@ -324,6 +352,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Connection;
     }
 
+    @Override
     public HashOperations ops4Hash() {
         if (null == ops4Hash) {
             ops4Hash = new DefaultHashOperations(this);
@@ -331,6 +360,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Hash;
     }
 
+    @Override
     public HyperLogLogOperations ops4HyperLogLog() {
         if (null == ops4HyperLogLog) {
             ops4HyperLogLog = new DefaultHyperLogLogOperations(this);
@@ -338,6 +368,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4HyperLogLog;
     }
 
+    @Override
     public ListOperations ops4List() {
         if (null == ops4List) {
             ops4List = new DefaultListOperations(this);
@@ -345,6 +376,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4List;
     }
 
+    @Override
     public ServerOperations ops4Server() {
         if (null == ops4Server) {
             ops4Server = new DefaultServerOperations(this);
@@ -352,6 +384,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Server;
     }
 
+    @Override
     public SetOperations ops4Set() {
         if (null == ops4Set) {
             ops4Set = new DefaultSetOperations(this);
@@ -359,6 +392,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4Set;
     }
 
+    @Override
     public StringOperations ops4String() {
         if (null == ops4String) {
             ops4String = new DefaultStringOperations(this);
@@ -366,6 +400,7 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
         return ops4String;
     }
 
+    @Override
     public SortedSetOperations opsForZSet() {
         if (null == ops4ZSet) {
             ops4ZSet = new DefaultSortedSetOperations(this);

@@ -11,10 +11,12 @@ import redis.clients.jedis.Jedis;
  * @version: 1.0.0
  */
 public class DefaultConnectionOperations extends AbstractOperations implements ConnectionOperations {
+
     public DefaultConnectionOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
+    @Override
     public String auth(String password) {
         Jedis jedis = null;
         try {
@@ -25,6 +27,7 @@ public class DefaultConnectionOperations extends AbstractOperations implements C
         }
     }
 
+    @Override
     public String echo(String string) {
         Jedis jedis = null;
         try {
@@ -35,6 +38,7 @@ public class DefaultConnectionOperations extends AbstractOperations implements C
         }
     }
 
+    @Override
     public String ping() {
         Jedis jedis = null;
         try {
@@ -45,6 +49,7 @@ public class DefaultConnectionOperations extends AbstractOperations implements C
         }
     }
 
+    @Override
     public String quit() {
         Jedis jedis = null;
         try {
@@ -55,6 +60,7 @@ public class DefaultConnectionOperations extends AbstractOperations implements C
         }
     }
 
+    @Override
     public String select(int index) {
         Jedis jedis = null;
         try {

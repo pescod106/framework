@@ -47,6 +47,8 @@ public interface StringOperations {
      */
     <K> Long bitCount(K key, long start, long end);
 
+    <K> Long bitPos(K key, boolean value);
+
     /**
      * 返回字符串里面第一个被设置为1或者0的bit位。
      * <p>
@@ -207,7 +209,7 @@ public interface StringOperations {
      * @param <K>
      * @param <V>
      */
-    <K, V> void psetex(K key, V value, int milliseconds);
+    <K, V> void psetex(K key, V value, long milliseconds);
 
     /**
      * 将键key设定为指定的“字符串”值。

@@ -12,10 +12,12 @@ import redis.clients.jedis.Jedis;
  * @version: 1.0.0
  */
 public class DefaultHyperLogLogOperations extends AbstractOperations implements HyperLogLogOperations {
+
     public DefaultHyperLogLogOperations(RedisTemplate redisTemplate) {
         super(redisTemplate);
     }
 
+    @Override
     public <K, V> Long pfadd(K key, V... elements) {
         Jedis jedis = null;
         try {
@@ -30,6 +32,7 @@ public class DefaultHyperLogLogOperations extends AbstractOperations implements 
         }
     }
 
+    @Override
     public <K> Long pfcount(K... keys) {
         Jedis jedis = null;
         try {
@@ -44,6 +47,7 @@ public class DefaultHyperLogLogOperations extends AbstractOperations implements 
         }
     }
 
+    @Override
     public <K, V> void pfmerge(K destkey, V... sourcekeys) {
         Jedis jedis = null;
         try {
