@@ -14,11 +14,11 @@
     </bean>
 
     <!-- 工厂类配置 -->
-    <bean id="connectionFactory" class="com.ltar.redis.connection.jedis.JedisConnectionFactory">
+    <bean id="connectionFactory" class="com.ltar.framework.redis.connection.jedis.JedisConnectionFactory">
         <property name="poolConfig" ref="jedisPoolConfig"/>
     </bean>
 
-    <bean id="redisTemplate" class="com.ltar.redis.impl.RedisTemplate">
+    <bean id="redisTemplate" class="com.ltar.framework.redis.impl.RedisTemplate">
         <property name="ip" value="${redis.ip}"/>
         <property name="port" value="${redis.port}"/>
         <property name="timeout" value="${redis.timeout}"/>
