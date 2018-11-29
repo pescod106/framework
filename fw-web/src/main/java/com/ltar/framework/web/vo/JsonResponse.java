@@ -2,7 +2,11 @@ package com.ltar.framework.web.vo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+<<<<<<< HEAD:fw-web/src/main/java/com/ltar/framework/web/vo/JsonResponse.java
 import com.ltar.framework.json.util.JsonUtils;
+=======
+import com.ltar.framework.json.util.JacksonUtils;
+>>>>>>> master:fw-web/src/main/java/com/ltar/framework/web/vo/JsonResponse.java
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -105,9 +109,9 @@ public class JsonResponse implements Serializable {
                 && !(entity instanceof List)
                 && !entity.getClass().isArray()
                 && !entity.getClass().isPrimitive()) {
-            String json = JsonUtils.dump(entity);
+            String json = JacksonUtils.dump(entity);
             if (!StringUtils.isEmpty(json) && json.length() >= 5) {
-                Map entityData = JsonUtils.load(json);
+                Map entityData = JacksonUtils.load(json);
                 if (keepOldMap) {
                     return this.setData(entityData);
                 } else {
