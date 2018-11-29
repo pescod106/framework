@@ -3,6 +3,8 @@ package com.ltar.framework.base.util;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +39,6 @@ public class ReflectUtilsTest {
         System.out.println(IpUtils.ip2Long("127.0.0.1"));
         System.out.println(IpUtils.long2Ip(2130706433));
     }
-
 
 
     public static String[][] getPreTwelveList(int year, int month) {
@@ -97,5 +98,48 @@ public class ReflectUtilsTest {
 
         str = str + num;
         return str;
+    }
+
+    @Test
+    public void testDateTime() {
+        String dateStr = "2018-11-28";
+        LocalDateTime localDateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.BASIC_ISO_DATE);
+        System.out.println(localDateTime);
+    }
+
+    @Test
+    public void testDateTimeFormat() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String dateStr0 = localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        System.out.println("ISO_LOCAL_DATE:"+dateStr0);
+//        String dateStr1 = localDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE);
+//        System.out.println("ISO_OFFSET_DATE:"+dateStr1);
+        String dateStr2 = localDateTime.format(DateTimeFormatter.ISO_DATE);
+        System.out.println("ISO_DATE:"+dateStr2);
+        String dateStr3 = localDateTime.format(DateTimeFormatter.ISO_LOCAL_TIME);
+        System.out.println("ISO_LOCAL_TIME:"+dateStr3);
+//        String dateStr4 = localDateTime.format(DateTimeFormatter.ISO_OFFSET_TIME);
+//        System.out.println("ISO_OFFSET_TIME:"+dateStr4);
+        String dateStr5 = localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println("ISO_LOCAL_DATE_TIME:"+dateStr5);
+//        String dateStr6 = localDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+//        System.out.println("ISO_OFFSET_DATE_TIME:"+dateStr6);
+//        String dateStr7 = localDateTime.format(DateTimeFormatter.ISO_ZONED_DATE_TIME);
+//        System.out.println("ISO_ZONED_DATE_TIME:"+dateStr7);
+        String dateStr8 = localDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        System.out.println("ISO_DATE_TIME:"+dateStr8);
+        String dateStr9 = localDateTime.format(DateTimeFormatter.ISO_ORDINAL_DATE);
+        System.out.println("ISO_ORDINAL_DATE:"+dateStr9);
+        String dateStr10 = localDateTime.format(DateTimeFormatter.ISO_WEEK_DATE);
+        System.out.println("ISO_WEEK_DATE:"+dateStr10);
+//        String dateStr11 = localDateTime.format(DateTimeFormatter.ISO_INSTANT);
+//        System.out.println("ISO_INSTANT:"+dateStr11);
+        String dateStr12 = localDateTime.format(DateTimeFormatter.BASIC_ISO_DATE);
+        System.out.println("BASIC_ISO_DATE:"+dateStr12);
+//        String dateStr13 = localDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
+//        System.out.println("RFC_1123_DATE_TIME:"+dateStr13);
+        String dateStr14 = localDateTime.format(DateTimeFormatter.ISO_TIME);
+        System.out.println("ISO_TIME:"+dateStr14);
+
     }
 }

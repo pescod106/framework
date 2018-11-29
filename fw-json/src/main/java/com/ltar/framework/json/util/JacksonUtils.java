@@ -15,7 +15,7 @@ import java.util.Map;
  * @date: 2018/9/17
  * @version: 1.0.0
  */
-public class JsonUtils {
+public class JacksonUtils {
 
     /**
      * 将对象转化成json串

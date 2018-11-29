@@ -1,7 +1,7 @@
 package com.ltar.framework.db.redis;
 
 //import cn.huoqiu.base.util.JsonUtil;
-import com.ltar.framework.json.util.JsonUtils;
+import com.ltar.framework.json.util.JacksonUtils;
 import org.junit.After;
 import org.junit.Test;
 
@@ -215,7 +215,7 @@ public class RedisTest extends BaseTest {
          */
         Redis.rpush("seven", generateStuList().toArray());
 
-        Redis.set("14", JsonUtils.dump(generateStrMap()));
+        Redis.set("14", JacksonUtils.dump(generateStrMap()));
     }
 
     @Test

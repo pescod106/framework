@@ -1,8 +1,10 @@
 package com.ltar.framework.base.util;
 
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -15,10 +17,19 @@ import java.util.regex.Pattern;
  */
 public class DateUtils {
 
-    public static final String FORMAT_ONE = "yyyy-MM-dd HH:mm:ss";
-    public static final String FORMAT_TWO = "yyyyMMdd-HHmmss";
-    public static final String FORMAT_THREE = "yyyyMMdd HHmmss";
-    public static final String FORMAT_FOUR = "yyyyMMddHHmmss";
+    /**
+     * yyyyMMdd
+     */
+    public static final DateTimeFormatter DATE_COMPACT_FORMAT = DateTimeFormatter.BASIC_ISO_DATE;
+    /**
+     * yyyy-MM-dd
+     */
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE;
+
+    public static final DateTimeFormatter TIME_COMPACT_FORMAT = DateTimeFormatter.ofPattern("HHmmss");
+    public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
+    public static final DateTimeFormatter DATETIME_COMPACT_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+    public static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public static final int SECOND_PER_DAY = 60 * 60 * 24;
 
@@ -27,42 +38,12 @@ public class DateUtils {
      * 将字符串按照制定格式转化成Date
      *
      * @param dateStr
-     * @param format
+     * @param formatter
      * @return
      */
-    public static Date str2Date(String dateStr, String format) {
-        Date date = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        dateFormat.setLenient(false);
-        try {
-            date = dateFormat.parse(dateStr);
-        } catch (ParseException e) {
-            throw new DateUtilException(e.getMessage(), e);
-        }
-        return date;
-    }
-
-    /**
-     * Parses text from a string to produce a <code>Date</code>.
-     * <p>
-     * The method attempts to parse text starting at the index given by
-     * <code>pos</code>.
-     *
-     * @param dateStr
-     * @param format
-     * @param pos
-     * @return
-     */
-    public static Date str2Date(String dateStr, String format, ParsePosition pos) {
-        Date date = null;
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        dateFormat.setLenient(false);
-        try {
-            date = dateFormat.parse(dateStr, pos);
-        } catch (Exception e) {
-            throw new DateUtilException(e.getMessage(), e);
-        }
-        return date;
+    public static Date str2Date(String dateStr, DateTimeFormatter formatter) {
+        LocalDateTime localDateTime = LocalDateTime.parse(dateStr, formatter);
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     /**
@@ -72,31 +53,20 @@ public class DateUtils {
      * @return
      */
     public static String date2Str(Date date) {
-        return date2Str(date, FORMAT_ONE);
+        return date2Str(date, DATETIME_FORMAT);
     }
 
     /**
      * 将Date转化成指定format格式的字符串
      *
      * @param date
-     * @param format
+     * @param formatter
      * @return
      */
-    public static String date2Str(Date date, String format) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        String result = dateFormat.format(date);
-        return result;
+    public static String date2Str(Date date, DateTimeFormatter formatter) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).format(formatter);
     }
 
-    /**
-     * 获取当前时间指定format格式的字符串
-     *
-     * @param format
-     * @return
-     */
-    public static String getCurrentDateStr(String format) {
-        return date2Str(new Date(), format);
-    }
 
     /**
      * 获得指定月份所包含的天数

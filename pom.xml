@@ -35,6 +35,7 @@
         <jaxb.impl.version>2.3.1</jaxb.impl.version>
         <commons.cli.version>1.4</commons.cli.version>
         <jetty-server.verson>9.2.5.v20141112</jetty-server.verson>
+        <fastjson.version>1.2.52</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -196,6 +197,12 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <!--Redis-->
