@@ -5,11 +5,6 @@ import com.ltar.framework.redis.constant.DataType;
 import com.ltar.framework.redis.core.*;
 import com.ltar.framework.redis.core.ops.*;
 import com.ltar.framework.redis.utils.TimeoutUtils;
-<<<<<<< HEAD:fw-redis/src/main/java/com/ltar/framework/redis/impl/RedisTemplate.java
-import com.ltar.redis.core.*;
-import com.ltar.redis.core.ops.*;
-=======
->>>>>>> master:fw-redis/src/main/java/com/ltar/framework/redis/impl/RedisTemplate.java
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;
