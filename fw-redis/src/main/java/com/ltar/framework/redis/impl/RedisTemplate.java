@@ -21,15 +21,28 @@ import java.util.concurrent.TimeUnit;
  */
 public class RedisTemplate extends RedisAccessor implements RedisOperations {
 
-    private ClusterOperations ops4Cluster;
-    private ConnectionOperations ops4Connection;
-    private HashOperations ops4Hash;
-    private HyperLogLogOperations ops4HyperLogLog;
-    private ListOperations ops4List;
-    private ServerOperations ops4Server;
-    private SetOperations ops4Set;
-    private SortedSetOperations ops4ZSet;
-    private StringOperations ops4String;
+    private final ClusterOperations ops4Cluster;
+    private final ConnectionOperations ops4Connection;
+    private final HashOperations ops4Hash;
+    private final HyperLogLogOperations ops4HyperLogLog;
+    private final ListOperations ops4List;
+    private final ServerOperations ops4Server;
+    private final SetOperations ops4Set;
+    private final SortedSetOperations ops4ZSet;
+    private final StringOperations ops4String;
+
+    public RedisTemplate() {
+        this.ops4Cluster = new DefaultClusterOperations(this);
+        this.ops4Connection = new DefaultConnectionOperations(this);
+        this.ops4Hash = new DefaultHashOperations(this);
+        this.ops4HyperLogLog = new DefaultHyperLogLogOperations(this);
+        this.ops4List = new DefaultListOperations(this);
+        this.ops4Server = new DefaultServerOperations(this);
+        this.ops4Set = new DefaultSetOperations(this);
+        this.ops4ZSet = new DefaultSortedSetOperations(this);
+        this.ops4String = new DefaultStringOperations(this);
+    }
+
 
     @Override
     public <K> Boolean exists(K key) {
@@ -338,75 +351,47 @@ public class RedisTemplate extends RedisAccessor implements RedisOperations {
 
     @Override
     public ClusterOperations ops4Cluster() {
-        if (null == ops4Cluster) {
-            ops4Cluster = new DefaultClusterOperations(this);
-        }
         return ops4Cluster;
     }
 
     @Override
     public ConnectionOperations ops4Connection() {
-        if (null == ops4Connection) {
-            ops4Connection = new DefaultConnectionOperations(this);
-        }
         return ops4Connection;
     }
 
     @Override
     public HashOperations ops4Hash() {
-        if (null == ops4Hash) {
-            ops4Hash = new DefaultHashOperations(this);
-        }
         return ops4Hash;
     }
 
     @Override
     public HyperLogLogOperations ops4HyperLogLog() {
-        if (null == ops4HyperLogLog) {
-            ops4HyperLogLog = new DefaultHyperLogLogOperations(this);
-        }
         return ops4HyperLogLog;
     }
 
     @Override
     public ListOperations ops4List() {
-        if (null == ops4List) {
-            ops4List = new DefaultListOperations(this);
-        }
         return ops4List;
     }
 
     @Override
     public ServerOperations ops4Server() {
-        if (null == ops4Server) {
-            ops4Server = new DefaultServerOperations(this);
-        }
         return ops4Server;
     }
 
     @Override
     public SetOperations ops4Set() {
-        if (null == ops4Set) {
-            ops4Set = new DefaultSetOperations(this);
-        }
         return ops4Set;
     }
 
     @Override
     public StringOperations ops4String() {
-        if (null == ops4String) {
-            ops4String = new DefaultStringOperations(this);
-        }
         return ops4String;
     }
 
     @Override
     public SortedSetOperations opsForZSet() {
-        if (null == ops4ZSet) {
-            ops4ZSet = new DefaultSortedSetOperations(this);
-        }
         return ops4ZSet;
     }
-
 
 }

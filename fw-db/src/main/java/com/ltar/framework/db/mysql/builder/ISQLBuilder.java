@@ -19,9 +19,9 @@ public interface ISQLBuilder extends Cloneable {
 
     String escapeColumn(String column);
 
-    void tag(String var);
+    void tag(String tag);
 
-    void addParam(Object... var);
+    void addParam(Object... params);
 
     void where(String column, Object... values);
 

@@ -4,6 +4,7 @@ import com.ltar.framework.redis.impl.RedisTemplate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,7 +28,8 @@ public class RedisTest extends BaseTest {
     }
 
     @Test
-    public void testGet(){
+    public void testGet() {
+        redisTemplate.ops4String().set("czg", "pescod");
         String value = (String) redisTemplate.ops4String().get("czg");
         System.out.println(value);
     }

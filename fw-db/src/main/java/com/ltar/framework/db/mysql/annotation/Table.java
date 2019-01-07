@@ -6,12 +6,21 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @desc:
+ * @description:
  * @author: changzhigao
- * @date: 2018/9/14
+ * @date: 2018-12-31
  * @version: 1.0.0
  */
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Id {
+public @interface Table {
+    String name() default "";
+
+    String catalog() default "";
+
+    String schema() default "";
+
+    UniqueConstraint[] uniqueConstrints() default {};
+
+    Index[] indexes() default {};
 }
