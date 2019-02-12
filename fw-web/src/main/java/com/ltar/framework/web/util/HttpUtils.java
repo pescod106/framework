@@ -134,12 +134,12 @@ public class HttpUtils {
             List<NameValuePair> pairs = convertMap2NVPS(params);
             ub.setParameters(pairs);
         }
-        HttpResponseEntity responseEntity = new HttpResponseEntity();
         HttpGet httpGet = null;
         try {
             httpGet = new HttpGet(ub.build());
         } catch (URISyntaxException e) {
             LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
         httpGet.setConfig(requestConfig);
         if (null != headers) {
@@ -148,6 +148,7 @@ public class HttpUtils {
             httpGet.setHeaders(headerArr);
         }
         return execute(httpGet, decodeCharset, null, null);
+
     }
 
     private static CloseableHttpClient getHttpClient()

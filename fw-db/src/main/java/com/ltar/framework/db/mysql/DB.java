@@ -10,13 +10,9 @@ public class DB implements Comparable<String> {
     private String url;
     private boolean equals;
 
-    public void test() {
-        this.equals = url.equals("");
-        boolean equals = this.equals;
-    }
 
     public int compareTo(String o) {
-        return o.length();
+        return 0;
 
     }
 }

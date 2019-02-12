@@ -26,6 +26,7 @@ public class JedisConnectionFactory implements RedisConnectionFactory {
 
     private JedisShardInfo shardInfo;
 
+    @Override
     public Jedis getJedis(String ip, int port, int timeout) {
         Jedis jedis = null;
         int retryNum = 0;

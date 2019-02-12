@@ -29,11 +29,11 @@ public class EntityClassWrapper {
     private final String tableName;
     private final LinkedHashMap<String, ColumnField> columnFields;
     private final LinkedHashMap<String, ColumnField> dbColumnFields;
-    private final ColumnField idColumnField;
-    private final ColumnField VersionField;
-    private final LinkedHashMap<String, ReferenceField> referenceFields;
-    private final LinkedHashMap<String, ReferencesField> referencesField;
-    private final List<EntityField> entityFields;
+    //    private final ColumnField idColumnField;
+//    private final ColumnField VersionField;
+//    private final LinkedHashMap<String, ReferenceField> referenceFields;
+//    private final LinkedHashMap<String, ReferencesField> referencesField;
+    private final List<EntityField> entityFields = null;
 
     public EntityClassWrapper(Class<?> kclass) {
         if (!ReflectUtils.isAnnotationPresent(kclass, Table.class)) {

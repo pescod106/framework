@@ -21,12 +21,9 @@ public class StreamUtils {
     public static byte[] fileToByte(String file) {
 
         byte[] result = null;
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
+        try (InputStream inputStream = new FileInputStream(file)) {
             result = new byte[inputStream.available()];
             inputStream.read(result);
-            inputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

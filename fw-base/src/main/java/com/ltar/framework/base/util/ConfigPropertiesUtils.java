@@ -32,8 +32,7 @@ public class ConfigPropertiesUtils {
     }
 
     public static String getValue(String key, String defaultValue, Charset originCharaset, Charset convertCharset) {
-        String value = null;
-        value = resourceBundle.getString(key);
+        String value = resourceBundle.getString(key);
         try {
             if (!StringUtils.isEmpty(value)) {
                 value = new String(value.getBytes(originCharaset), convertCharset);
@@ -41,7 +40,6 @@ public class ConfigPropertiesUtils {
         } catch (Exception e) {
             LOGGER.debug("获取[" + key + "]时出现问题，errorMsg:" + e.getMessage(), e);
         }
-        value = null == value ? defaultValue : value;
         return value;
     }
 

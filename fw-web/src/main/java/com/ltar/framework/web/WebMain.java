@@ -42,10 +42,10 @@ public class WebMain {
         try {
             CommandLine commandLine = parser.parse(options, args);
             if (commandLine.hasOption("p")) {
-                port = Integer.valueOf(commandLine.getOptionValue("p"));
+                port = Integer.parseInt(commandLine.getOptionValue("p"));
             }
             if (commandLine.hasOption("m")) {
-                threadSize = Integer.valueOf(commandLine.getOptionValue("m"));
+                threadSize = Integer.parseInt(commandLine.getOptionValue("m"));
             }
             if (commandLine.hasOption("w")) {
                 war = commandLine.getOptionValue("w");
@@ -54,7 +54,7 @@ public class WebMain {
                 contextPath = commandLine.getOptionValue("c");
             }
             if (commandLine.hasOption("g")) {
-                gracefulShutdownTimeout = Integer.valueOf(commandLine.getOptionValue("g"));
+                gracefulShutdownTimeout = Integer.parseInt(commandLine.getOptionValue("g"));
             }
             if (commandLine.hasOption("h")) {
                 usage(options);

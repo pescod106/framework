@@ -39,8 +39,8 @@ public class Redis {
 
     static {
         redisIp = null == ConfigPropertiesUtils.getValue("redis.ip") ? REDIS_DEFAULT_IP : ConfigPropertiesUtils.getValue("redis.ip");
-        redisPort = null == ConfigPropertiesUtils.getValue("redis.port") ? REDIS_DEFAULT_PORT : Integer.valueOf(ConfigPropertiesUtils.getValue("redis.port"));
-        redisTimeout = null == ConfigPropertiesUtils.getValue("redis.timeout") ? REDIS_DEFAULT_TIMEOUT : Integer.valueOf(ConfigPropertiesUtils.getValue("redis.timeout"));
+        redisPort = null == ConfigPropertiesUtils.getValue("redis.port") ? REDIS_DEFAULT_PORT : Integer.parseInt(ConfigPropertiesUtils.getValue("redis.port"));
+        redisTimeout = null == ConfigPropertiesUtils.getValue("redis.timeout") ? REDIS_DEFAULT_TIMEOUT : Integer.parseInt(ConfigPropertiesUtils.getValue("redis.timeout"));
     }
 
     public static Jedis getJedis() {
